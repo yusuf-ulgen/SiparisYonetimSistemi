@@ -1,0 +1,107 @@
+{
+    "nav": {
+        "menu": "Menü",
+        "cart": "Sepet",
+        "staff": "Personel",
+        "admin": "Admin"
+    },
+    "common": {
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "delete": "Sil",
+        "edit": "Düzenle",
+        "add": "Ekle",
+        "close": "Kapat",
+        "loading": "Yükleniyor...",
+        "search": "Ara...",
+        "noData": "Veri bulunamadı.",
+        "confirm": "Onayla",
+        "back": "Geri"
+    },
+    "menu": {
+        "title": "Menü",
+        "allCategories": "Tümü",
+        "addToCart": "Sepete Ekle",
+        "outOfStock": "Stokta Yok",
+        "note": "Not ekle (isteğe bağlı)",
+        "notePlaceholder": "Örn: Acısız olsun",
+        "waiterCall": "Garson Çağır",
+        "waiterCalled": "Garson Çağrıldı! ✓",
+        "viewCart": "Sepeti Gör",
+        "orderStatus": "Sipariş Durumu"
+    },
+    "cart": {
+        "title": "Sepetim",
+        "empty": "Sepetiniz boş.",
+        "total": "Toplam",
+        "checkout": "Sipariş Ver",
+        "remove": "Kaldır",
+        "quantity": "Adet",
+        "note": "Not",
+        "tableNumber": "Masa",
+        "checkoutSuccess": "Siparişiniz alındı!",
+        "ordering": "Sipariş veriliyor..."
+    },
+    "orderStatus": {
+        "title": "Sipariş Durumu",
+        "received": "Alındı",
+        "preparing": "Hazırlanıyor",
+        "delivered": "Teslim Edildi",
+        "table": "Masa",
+        "items": "Ürünler",
+        "noOrders": "Sipariş bulunamadı.",
+        "refresh": "Yenile"
+    },
+    "staff": {
+        "title": "Mutfak Paneli",
+        "subtitle": "Canlı Sipariş Takip Sistemi",
+        "orders": "Siparişler",
+        "newOrders": "Yeni Gelenler",
+        "preparing": "Hazırlanıyor",
+        "waiterCalls": "Garson Çağrıları",
+        "tables": "Masalar",
+        "startPreparing": "Hazırlamaya Başla",
+        "delivered": "Teslim Edildi",
+        "cancel": "İptal",
+        "onMyWay": "Yola Çıktım",
+        "occupied": "Dolu",
+        "free": "Boş",
+        "noNewOrders": "Bekleyen sipariş yok.",
+        "noPreparingOrders": "Hazırlanan sipariş yok.",
+        "noWaiterCalls": "Bekleyen garson çağrısı yok.",
+        "systemActive": "Sistem Aktif",
+        "waiterCallBadge": "{{count}} Garson Çağrısı"
+    },
+    "admin": {
+        "login": "Admin Girişi",
+        "loginButton": "Giriş Yap",
+        "username": "Kullanıcı Adı",
+        "password": "Şifre",
+        "logout": "Çıkış",
+        "dashboard": "Dashboard",
+        "categories": "Kategoriler",
+        "products": "Ürünler",
+        "tables": "Masalar",
+        "reports": "Raporlar",
+        "orderHistory": "Sipariş Geçmişi",
+        "changePassword": "Şifre Değiştir",
+        "users": "Kullanıcılar"
+    },
+    "home": {
+        "title": "QR Sipariş Sistemi",
+        "subtitle": "Restoran yönetim paneli",
+        "customerSection": "Müşteri",
+        "staffSection": "Personel",
+        "adminSection": "Yönetim",
+        "scanQR": "QR Kodu Taratın",
+        "selectTable": "Masa Seçin",
+        "goToMenu": "Menüye Git",
+        "goToStaff": "Personel Paneli",
+        "goToAdmin": "Admin Paneli"
+    },
+    "language": {
+        "tr": "Türkçe",
+        "en": "English",
+        "switch": "Dil"
+    }
+}

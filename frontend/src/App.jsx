@@ -1,92 +1,89 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Card, Button, Navbar, Badge } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { CartProvider } from './context/CartContext';
+import CustomerMenu from './pages/CustomerMenu';
+import CartPage from './pages/CartPage';
+import StaffDashboard from './pages/StaffDashboard';
+import StaffLogin from './pages/StaffLogin';
+import OrderStatusPage from './pages/OrderStatusPage';
+import HomePage from './pages/HomePage';
+
+// Admin Pages
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminCategories from './pages/admin/AdminCategories';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminTables from './pages/admin/AdminTables';
+import AdminReports from './pages/admin/AdminReports';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminOrders from './pages/admin/AdminOrders';
+import AdminChangePassword from './pages/admin/AdminChangePassword';
+import AdminUsers from './pages/admin/AdminUsers';
+
+// Admin protected route
+const ProtectedAdminRoute = ({ children }) => {
+  const token = localStorage.getItem('adminToken');
+  if (!token) return <Navigate to="/admin/login" replace />;
+  return children;
+};
+
+// Staff protected route — allows both STAFF and ADMIN tokens
+const ProtectedStaffRoute = ({ children }) => {
+  const token = localStorage.getItem('staffToken') || localStorage.getItem('adminToken');
+  if (!token) return <Navigate to="/staff/login" replace />;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (['ADMIN', 'STAFF'].includes(payload.role)) return children;
+  } catch { /* invalid token */ }
+  return <Navigate to="/staff/login" replace />;
+};
+
 
 function App() {
-  // Örnek Menü Verisi
-  const [menuItems] = useState([
-    { id: 1, name: "Türk Kahvesi", price: 60, category: "İçecek" },
-    { id: 2, name: "Filtre Kahve", price: 75, category: "İçecek" },
-    { id: 3, name: "Latte", price: 85, category: "İçecek" },
-    { id: 4, name: "Brownie", price: 110, category: "Tatlı" },
-    { id: 5, name: "Tiramisu", price: 120, category: "Tatlı" },
-  ]);
-
-  const [cart, setCart] = useState([]);
-
-  const addToCart = (item) => {
-    setCart([...cart, item]);
-  };
-
-  const handleSendOrder = async () => {
-    const orderData = {
-      tableNumber: "5", // Şimdilik sabit, sonra QR'dan alacağız
-      items: cart.map(item => item.name).join(", "),
-      totalPrice: cart.reduce((total, item) => total + item.price, 0),
-      status: "Yeni"
-    };
-
-    try {
-      // Backend'e (8081 portuna) veriyi gönderiyoruz
-      const response = await fetch("http://localhost:8081/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData)
-      });
-
-      if (response.ok) {
-        alert("Sipariş başarıyla mutfağa iletildi!");
-        setCart([]);
-      }
-    } catch (error) {
-      console.error("Hata:", error);
-      alert("Sipariş gönderilemedi, sunucu kapalı olabilir.");
-    }
-  };
-
   return (
-    <div style={{ backgroundColor: '#f4f4f9', minHeight: '100vh', paddingBottom: '100px' }}>
-      {/* Üst Bar */}
-      <Navbar bg="dark" variant="dark" sticky="top" className="shadow">
-        <Container>
-          <Navbar.Brand className="fw-bold">☕ Kafe Menü</Navbar.Brand>
-          <Badge bg="primary" pill>{cart.length} Ürün</Badge>
-        </Container>
-      </Navbar>
+    <CartProvider>
+      <Router>
+        <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+          <Routes>
+            {/* Customer Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/menu" element={<CustomerMenu />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/order-status" element={<OrderStatusPage />} />
 
-      <Container className="mt-4">
-        <h2 className="text-center mb-4 fw-light">Menümüz</h2>
-        <Row>
-          {menuItems.map((item) => (
-            <Col xs={12} md={6} key={item.id} className="mb-3">
-              <Card className="border-0 shadow-sm h-100">
-                <Card.Body className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <h5 className="mb-1">{item.name}</h5>
-                    <small className="text-muted d-block mb-2">{item.category}</small>
-                    <span className="fw-bold text-primary">{item.price} TL</span>
-                  </div>
-                  <Button variant="outline-dark" size="sm" onClick={() => addToCart(item)}>
-                    Ekle +
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </Container>
+            {/* Staff Routes */}
+            <Route path="/staff/login" element={<StaffLogin />} />
+            <Route path="/staff" element={
+              <ProtectedStaffRoute>
+                <StaffDashboard />
+              </ProtectedStaffRoute>
+            } />
 
-      {/* Alt Sipariş Barı (Sadece ürün varsa görünür) */}
-      {cart.length > 0 && (
-        <div className="fixed-bottom p-3 bg-white border-top shadow-lg animate__animated animate__slideInUp">
-          <Container>
-            <Button variant="success" className="w-100 py-3 fw-bold shadow" onClick={handleSendOrder}>
-              SİPARİŞİ TAMAMLA ({cart.reduce((total, item) => total + item.price, 0)} TL)
-            </Button>
-          </Container>
+            {/* Admin Login Route */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+
+            {/* Protected Admin Routes */}
+            <Route path="/admin" element={
+              <ProtectedAdminRoute>
+                <AdminLayout />
+              </ProtectedAdminRoute>
+            }>
+              <Route index element={<AdminDashboard />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="tables" element={<AdminTables />} />
+              <Route path="reports" element={<AdminReports />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="password" element={<AdminChangePassword />} />
+              <Route path="users" element={<AdminUsers />} />
+            </Route>
+
+            {/* Default redirect */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </div>
-      )}
-    </div>
+      </Router>
+    </CartProvider>
   );
 }
 

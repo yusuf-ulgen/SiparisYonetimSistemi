@@ -1,9 +1,12 @@
-package com.example.backend;
+package com.example.backend.repository;
 
+import com.example.backend.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    // Bu arayüz sayesinde kayıt etme (save), silme ve listeleme metotları hazır gelecek.
+    List<Order> findByStatusNot(Order.OrderStatus status);
 }

@@ -1,0 +1,107 @@
+{
+    "nav": {
+        "menu": "Menu",
+        "cart": "Cart",
+        "staff": "Staff",
+        "admin": "Admin"
+    },
+    "common": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "close": "Close",
+        "loading": "Loading...",
+        "search": "Search...",
+        "noData": "No data found.",
+        "confirm": "Confirm",
+        "back": "Back"
+    },
+    "menu": {
+        "title": "Menu",
+        "allCategories": "All",
+        "addToCart": "Add to Cart",
+        "outOfStock": "Out of Stock",
+        "note": "Add a note (optional)",
+        "notePlaceholder": "e.g. No spice please",
+        "waiterCall": "Call Waiter",
+        "waiterCalled": "Waiter Called! ✓",
+        "viewCart": "View Cart",
+        "orderStatus": "Order Status"
+    },
+    "cart": {
+        "title": "My Cart",
+        "empty": "Your cart is empty.",
+        "total": "Total",
+        "checkout": "Place Order",
+        "remove": "Remove",
+        "quantity": "Qty",
+        "note": "Note",
+        "tableNumber": "Table",
+        "checkoutSuccess": "Order placed!",
+        "ordering": "Placing order..."
+    },
+    "orderStatus": {
+        "title": "Order Status",
+        "received": "Received",
+        "preparing": "Preparing",
+        "delivered": "Delivered",
+        "table": "Table",
+        "items": "Items",
+        "noOrders": "No orders found.",
+        "refresh": "Refresh"
+    },
+    "staff": {
+        "title": "Kitchen Panel",
+        "subtitle": "Live Order Tracking System",
+        "orders": "Orders",
+        "newOrders": "New Orders",
+        "preparing": "Preparing",
+        "waiterCalls": "Waiter Calls",
+        "tables": "Tables",
+        "startPreparing": "Start Preparing",
+        "delivered": "Delivered",
+        "cancel": "Cancel",
+        "onMyWay": "On My Way",
+        "occupied": "Occupied",
+        "free": "Free",
+        "noNewOrders": "No pending orders.",
+        "noPreparingOrders": "No orders being prepared.",
+        "noWaiterCalls": "No waiter calls.",
+        "systemActive": "System Active",
+        "waiterCallBadge": "{{count}} Waiter Call(s)"
+    },
+    "admin": {
+        "login": "Admin Login",
+        "loginButton": "Sign In",
+        "username": "Username",
+        "password": "Password",
+        "logout": "Logout",
+        "dashboard": "Dashboard",
+        "categories": "Categories",
+        "products": "Products",
+        "tables": "Tables",
+        "reports": "Reports",
+        "orderHistory": "Order History",
+        "changePassword": "Change Password",
+        "users": "Users"
+    },
+    "home": {
+        "title": "QR Order System",
+        "subtitle": "Restaurant Management Panel",
+        "customerSection": "Customer",
+        "staffSection": "Staff",
+        "adminSection": "Management",
+        "scanQR": "Scan QR Code",
+        "selectTable": "Select Table",
+        "goToMenu": "Go to Menu",
+        "goToStaff": "Staff Panel",
+        "goToAdmin": "Admin Panel"
+    },
+    "language": {
+        "tr": "Türkçe",
+        "en": "English",
+        "switch": "Language"
+    }
+}
