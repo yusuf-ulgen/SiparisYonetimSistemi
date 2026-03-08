@@ -102,7 +102,7 @@ const CustomerMenu = () => {
                     <button
                         onClick={() => navigate(`/order-status?table=${encodeURIComponent(tableNumber)}`)}
                         className="p-2 bg-[#5d4037] hover:bg-[#4e342e] rounded-full border border-[#795548] shadow-inner transition transform hover:scale-105 active:scale-95"
-                        title="Sipariş Durumu"
+                        title={t('menu.orderStatus')}
                     >
                         <svg className="w-5 h-5 text-[#ffcc80]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -113,7 +113,7 @@ const CustomerMenu = () => {
                         onClick={callWaiter}
                         disabled={waiterCalled || waiterLoading}
                         className={`p-2 rounded-full border shadow-inner transition transform hover:scale-105 active:scale-95 ${waiterCalled ? 'bg-[#4caf50] border-[#81c784]' : 'bg-[#5d4037] hover:bg-[#4e342e] border-[#795548]'}`}
-                        title={waiterCalled ? 'Garson çağrıldı!' : 'Garson Çağır'}
+                        title={waiterCalled ? t('menu.waiterCalled') : t('menu.waiterCall')}
                     >
                         {waiterLoading ? (
                             <svg className="w-5 h-5 text-[#ffcc80] animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +151,7 @@ const CustomerMenu = () => {
             {waiterCalled && (
                 <div className="sticky top-[83px] z-10 mx-4 mt-2 bg-[#4caf50] text-white text-center py-2 px-4 rounded-xl font-bold shadow-lg border border-[#81c784] flex items-center justify-center gap-2 animate-pulse">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
-                    Garson çağrıldı! Kısa süre içinde gelecek.
+                    {t('menu.waiterCalled')}
                 </div>
             )}
 
@@ -174,7 +174,7 @@ const CustomerMenu = () => {
             {/* Product List Grid */}
             <div className="p-4 grid grid-cols-2 gap-4 mt-2">
                 {filteredProducts.length === 0 ? (
-                    <div className="col-span-2 text-center text-[#ffcc80] font-bold py-10 bg-[rgba(0,0,0,0.4)] rounded-xl border border-[rgba(255,255,255,0.1)]">Bu kategoride ürün bulunmuyor.</div>
+                    <div className="col-span-2 text-center text-[#ffcc80] font-bold py-10 bg-[rgba(0,0,0,0.4)] rounded-xl border border-[rgba(255,255,255,0.1)]">{t('common.noData')}</div>
                 ) : (
                     filteredProducts.map(product => (
                         <div key={product.id} className="theme-wood-card group flex flex-col cursor-pointer active:scale-95 touch-manipulation">
@@ -215,7 +215,7 @@ const CustomerMenu = () => {
                             onClick={() => navigate('/cart')}
                             className="w-full theme-wood-bg text-[#ffcc80] border-2 border-[#ffcc80] rounded-xl py-3 font-bold text-lg shadow-[0_0_15px_rgba(255,204,128,0.3)] hover:brightness-110 active:scale-95 transition transform flex justify-between items-center px-6"
                         >
-                            <span className="drop-shadow-md">Sepete Git ({getCartItemCount()} ürün)</span>
+                            <span className="drop-shadow-md">{t('menu.viewCart')} ({getCartItemCount()} {t('orderStatus.items')})</span>
                             <span className="bg-[#2e4c27] text-[#dcedc8] px-4 py-1 rounded-full text-sm border border-[#4caf50] shadow-inner font-extrabold">
                                 ₺{getCartTotal().toFixed(2)}
                             </span>
@@ -232,11 +232,11 @@ const CustomerMenu = () => {
                         <p className="text-[#d84315] font-bold text-lg mb-4">
                             ₺{typeof noteModal.product?.price === 'number' ? noteModal.product.price.toFixed(2) : parseFloat(noteModal.product?.price || 0).toFixed(2)}
                         </p>
-                        <label className="block text-sm font-bold text-[#5d4037] mb-2">Ürüne Not Ekle (İsteğe Bağlı)</label>
+                        <label className="block text-sm font-bold text-[#5d4037] mb-2">{t('menu.note')}</label>
                         <textarea
                             className="w-full border-2 border-[#d7ccc8] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#5d4037] outline-none font-medium resize-none bg-white text-[#3e2723]"
                             rows="3"
-                            placeholder="Örn: Acısız olsun, sos istemiyorum..."
+                            placeholder={t('menu.notePlaceholder')}
                             value={noteModal.note}
                             onChange={(e) => setNoteModal(prev => ({ ...prev, note: e.target.value }))}
                         />
@@ -245,13 +245,13 @@ const CustomerMenu = () => {
                                 onClick={() => setNoteModal({ open: false, product: null, note: '' })}
                                 className="flex-1 py-3 border-2 border-[#d7ccc8] rounded-xl text-[#5d4037] font-bold hover:bg-[#ffe0b2] transition"
                             >
-                                İptal
+                                {t('common.cancel')}
                             </button>
                             <button
                                 onClick={confirmAddToCart}
                                 className="flex-1 py-3 bg-[#4caf50] text-white rounded-xl font-bold border border-[#2e7d32] shadow hover:bg-[#388e3c] transition active:scale-95"
                             >
-                                Sepete Ekle
+                                {t('menu.addToCart')}
                             </button>
                         </div>
                     </div>

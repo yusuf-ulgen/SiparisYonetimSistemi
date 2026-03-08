@@ -39,8 +39,13 @@
         "quantity": "Qty",
         "note": "Note",
         "tableNumber": "Table",
-        "checkoutSuccess": "Order placed!",
-        "ordering": "Placing order..."
+        "checkoutSuccess": "ORDER RECEIVED!",
+        "checkoutDesc": "Your order has been successfully sent to the kitchen. Your flavors are being carefully prepared.",
+        "emptyDesc": "Blend into the trees to discover flavors.",
+        "orderSummary": "Order Summary",
+        "subtotal": "Subtotal",
+        "serviceFee": "Service Fee",
+        "ordering": "Blending into nature..."
     },
     "orderStatus": {
         "title": "Order Status",
@@ -85,19 +90,37 @@
         "reports": "Reports",
         "orderHistory": "Order History",
         "changePassword": "Change Password",
-        "users": "Users"
+        "users": "Users",
+        "loginDesc": "Please enter your details to access the system.",
+        "usernamePlaceholder": "e.g. admin",
+        "passwordPlaceholder": "••••••••",
+        "settings": "Site Settings",
+        "settingsTitle": "Site Management",
+        "saveSettings": "Save Settings",
+        "settingsDesc": "Update your restaurant information and visuals here."
     },
     "home": {
         "title": "QR Order System",
         "subtitle": "Restaurant Management Panel",
         "customerSection": "Customer",
+        "customerSubtitle": "Order and track",
         "staffSection": "Staff",
+        "staffSubtitle": "Kitchen and service panel",
         "adminSection": "Management",
+        "adminSubtitle": "Admin control",
         "scanQR": "Scan QR Code",
         "selectTable": "Select Table",
+        "tableSimulator": "Select Table (Customer Sandbox)",
         "goToMenu": "Go to Menu",
+        "menuDesc": "Browse items and add to cart",
+        "orderStatus": "Order Status",
+        "orderStatusDesc": "View your active orders",
         "goToStaff": "Staff Panel",
-        "goToAdmin": "Admin Panel"
+        "staffDesc": "View and update orders",
+        "goToAdmin": "Admin Panel",
+        "adminDesc": "Dashboard, categories, products",
+        "adminLogin": "Admin Login",
+        "adminLoginDesc": "Click to login"
     },
     "language": {
         "tr": "Türkçe",

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 import api from '../services/api';
 
@@ -9,6 +10,7 @@ const CartPage = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const { t } = useTranslation();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
 
@@ -60,13 +62,13 @@ const CartPage = () => {
                 <div className="bg-[#2e4c27] text-[#aed581] p-6 rounded-full mb-8 relative border-4 border-[#4caf50] shadow-[0_0_30px_rgba(76,175,80,0.5)]">
                     <svg className="w-16 h-16 animate-pulse drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                 </div>
-                <h2 className="text-4xl font-extrabold text-[#f5f5f5] mb-4 tracking-widest drop-shadow-md">SİPARİŞ ALINDI!</h2>
-                <p className="text-[#ffcc80] mb-10 max-w-sm mx-auto text-lg font-medium drop-shadow">Siparişiniz başarıyla mutfağa iletildi. Lezzetleriniz özenle hazırlanıyor.</p>
+                <h2 className="text-4xl font-extrabold text-[#f5f5f5] mb-4 tracking-widest drop-shadow-md">{t('cart.checkoutSuccess')}</h2>
+                <p className="text-[#ffcc80] mb-10 max-w-sm mx-auto text-lg font-medium drop-shadow">{t('cart.checkoutDesc')}</p>
                 <button
                     onClick={() => navigate('/menu')}
                     className="bg-[#4caf50] text-[#f5f5f5] px-10 py-4 rounded-xl font-extrabold hover:bg-[#388e3c] transition border-2 border-[#81c784] shadow-lg transform hover:-translate-y-1 active:scale-95"
                 >
-                    Menüye Dön
+                    {t('home.goToMenu')}
                 </button>
             </div>
         );
@@ -78,7 +80,7 @@ const CartPage = () => {
                 <button onClick={() => navigate(-1)} className="mr-4 p-2 bg-[#2e4c27] hover:bg-[#388e3c] rounded-full border border-[#81c784] shadow-inner transition active:scale-95 text-[#dcedc8]">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
-                <h1 className="text-2xl font-bold tracking-widest drop-shadow-md">Sepetim</h1>
+                <h1 className="text-2xl font-bold tracking-widest drop-shadow-md">{t('cart.title')}</h1>
                 <span className="ml-auto text-sm bg-[#5d4037] px-4 py-1.5 rounded-full text-[#ffcc80] font-bold border border-[#795548] shadow-inner">{tableNumber}</span>
             </header>
 
@@ -86,9 +88,9 @@ const CartPage = () => {
                 {cartItems.length === 0 ? (
                     <div className="text-center py-20 bg-[rgba(0,0,0,0.4)] rounded-2xl border border-[rgba(255,255,255,0.1)] mt-4 backdrop-blur-sm">
                         <svg className="w-24 h-24 mx-auto text-[#5d4037] mb-6 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        <h2 className="text-2xl font-bold text-[#f5f5f5] mb-2 drop-shadow">Sepetiniz Boş</h2>
-                        <p className="text-[#d7ccc8] mb-8 font-medium">Lezzetleri keşfetmek için ağaçların arasına karışın.</p>
-                        <button onClick={() => navigate('/menu')} className="bg-[#4caf50] text-[#f5f5f5] px-8 py-3 rounded-xl border border-[#81c784] font-bold shadow-lg hover:bg-[#388e3c] transform hover:-translate-y-1 transition active:scale-95">Menüye Git</button>
+                        <h2 className="text-2xl font-bold text-[#f5f5f5] mb-2 drop-shadow">{t('cart.empty')}</h2>
+                        <p className="text-[#d7ccc8] mb-8 font-medium">{t('cart.emptyDesc')}</p>
+                        <button onClick={() => navigate('/menu')} className="bg-[#4caf50] text-[#f5f5f5] px-8 py-3 rounded-xl border border-[#81c784] font-bold shadow-lg hover:bg-[#388e3c] transform hover:-translate-y-1 transition active:scale-95">{t('home.goToMenu')}</button>
                     </div>
                 ) : (
                     <div className="space-y-4">
@@ -112,7 +114,7 @@ const CartPage = () => {
                                         </button>
                                     </div>
                                     <div className="flex justify-between items-center border-t-2 border-[#ffe0b2] pt-4 mt-2 relative z-10">
-                                        <span className="text-[#5d4037] text-sm font-bold tracking-widest uppercase">Miktar</span>
+                                        <span className="text-[#5d4037] text-sm font-bold tracking-widest uppercase">{t('cart.quantity')}</span>
                                         <div className="flex items-center bg-[#f5f5f5] rounded-xl p-1 border-2 border-[#d7ccc8] shadow-inner">
                                             <button
                                                 onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
@@ -136,17 +138,17 @@ const CartPage = () => {
 
                         {/* Order Summary */}
                         <div className="theme-wood-card p-6 rounded-2xl shadow-xl border-4 border-[#3e2723] mt-8 mb-24">
-                            <h3 className="font-extrabold text-[#f5f5f5] mb-5 border-b-2 border-[#5d4037] pb-3 text-xl tracking-wider drop-shadow-md">Sipariş Özeti</h3>
+                            <h3 className="font-extrabold text-[#f5f5f5] mb-5 border-b-2 border-[#5d4037] pb-3 text-xl tracking-wider drop-shadow-md">{t('cart.orderSummary')}</h3>
                             <div className="flex justify-between mb-3 text-[#ffcc80] font-medium">
-                                <span>Ara Toplam</span>
+                                <span>{t('cart.subtotal')}</span>
                                 <span>₺{cartTotal.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between mb-5 text-[#ffcc80] font-medium">
-                                <span>Servis Ücreti</span>
+                                <span>{t('cart.serviceFee')}</span>
                                 <span>₺0.00</span>
                             </div>
                             <div className="flex justify-between items-center pt-4 border-t-2 border-[#5d4037]">
-                                <span className="font-extrabold text-[#f5f5f5] text-xl tracking-widest drop-shadow-md">TOPLAM</span>
+                                <span className="font-extrabold text-[#f5f5f5] text-xl tracking-widest drop-shadow-md">{t('cart.total')}</span>
                                 <span className="font-black text-[#81c784] text-3xl drop-shadow-lg">₺{cartTotal.toFixed(2)}</span>
                             </div>
                         </div>
@@ -164,10 +166,10 @@ const CartPage = () => {
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        Doğaya Karışıyor...
+                                        {t('cart.ordering')}
                                     </>
                                 ) : (
-                                    <span className="drop-shadow-md tracking-wider">HARİKA SEÇİM - ONAYLA</span>
+                                    <span className="drop-shadow-md tracking-wider">{t('cart.checkout')}</span>
                                 )}
                             </button>
                         </div>

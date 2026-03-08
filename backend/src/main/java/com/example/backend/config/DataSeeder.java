@@ -3,10 +3,12 @@ package com.example.backend.config;
 import com.example.backend.model.Category;
 import com.example.backend.model.Product;
 import com.example.backend.model.RestaurantTable;
+import com.example.backend.model.SiteSettings;
 import com.example.backend.model.User;
 import com.example.backend.repository.CategoryRepository;
 import com.example.backend.repository.ProductRepository;
 import com.example.backend.repository.RestaurantTableRepository;
+import com.example.backend.repository.SiteSettingsRepository;
 import com.example.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -25,6 +27,9 @@ public class DataSeeder implements CommandLineRunner {
         private RestaurantTableRepository tableRepository;
 
         @Autowired
+        private SiteSettingsRepository siteSettingsRepository;
+
+        @Autowired
         private UserRepository userRepository;
 
         @Override
@@ -38,6 +43,21 @@ public class DataSeeder implements CommandLineRunner {
                                         .active(true)
                                         .build());
                         System.out.println("👤 DataSeeder: Admin kullanıcı oluşturuldu (admin/admin123)");
+                }
+
+                // Varsayılan Site Ayarları (Eğer boşsa)
+                if (siteSettingsRepository.count() == 0) {
+                        System.out.println("⚙️ DataSeeder: Varsayılan site ayarları yükleniyor...");
+                        siteSettingsRepository.save(new SiteSettings(null, "restaurant_name", "QR Sipariş Sistemi",
+                                        "Sitede görünen restoran adı"));
+                        siteSettingsRepository.save(new SiteSettings(null, "restaurant_logo", "🌿",
+                                        "Sitede görünen logo (emoji veya URL)"));
+                        siteSettingsRepository.save(new SiteSettings(null, "contact_phone", "+90 555 123 4567",
+                                        "Siparişler sayfasındaki iletişim no"));
+                        siteSettingsRepository.save(new SiteSettings(null, "contact_address",
+                                        "Atatürk Mah. Restoran Sok. No:1", "İletişim Adresi"));
+                        siteSettingsRepository.save(
+                                        new SiteSettings(null, "home_hero_bg", "", "Ana sayfa arkaplan görsel URL'si"));
                 }
 
                 if (categoryRepository.count() == 0) {
@@ -68,7 +88,7 @@ public class DataSeeder implements CommandLineRunner {
                         // 3. Ürünler
                         // Sıcak İçecekler
                         kaydet("Çay", "İnce belli bardakta taze çay", 15.0,
-                                        "https://images.unsplash.com/photo-1576092768241-dec231879bfc?auto=format&fit=crop&w=300&q=80",
+                                        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Turkish_tea.jpg/640px-Turkish_tea.jpg",
                                         sicak);
                         kaydet("Türk Kahvesi", "Geleneksel köpüklü Türk kahvesi", 40.0,
                                         "https://images.unsplash.com/photo-1504630083234-14187a9df0f5?auto=format&fit=crop&w=300&q=80",
@@ -79,7 +99,7 @@ public class DataSeeder implements CommandLineRunner {
 
                         // Soğuk İçecekler
                         kaydet("Ayran", "Köpüklü yayık ayran", 20.0,
-                                        "https://images.unsplash.com/photo-1626074128038-16440db737ea?auto=format&fit=crop&w=300&q=80",
+                                        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ayran.jpg/640px-Ayran.jpg",
                                         soguk);
                         kaydet("Limonata", "Taze sıkılmış nane limonata", 45.0,
                                         "https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=300&q=80",
@@ -96,7 +116,7 @@ public class DataSeeder implements CommandLineRunner {
                                         "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=300&q=80",
                                         tatli);
                         kaydet("Sütlaç", "Fırında çıtır kabuklu sütlaç", 60.0,
-                                        "https://images.unsplash.com/photo-1621326888314-45afd86ef07e?auto=format&fit=crop&w=300&q=80",
+                                        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/S%C3%BCtla%C3%A7.jpg/640px-S%C3%BCtla%C3%A7.jpg",
                                         tatli);
 
                         // Ana Yemekler
@@ -107,7 +127,7 @@ public class DataSeeder implements CommandLineRunner {
                                         "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=300&q=80",
                                         ana);
                         kaydet("Adana Kebap", "Acılı el yapımı Adana kebap", 240.0,
-                                        "https://images.unsplash.com/photo-1573600073955-f15b3b6caab7?auto=format&fit=crop&w=300&q=80",
+                                        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Adana_kebap.jpg/640px-Adana_kebap.jpg",
                                         ana);
 
                         // Pizza
@@ -118,12 +138,44 @@ public class DataSeeder implements CommandLineRunner {
                                         "https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=300&q=80",
                                         pizza);
                         kaydet("Ton Balıklı Pizza", "Ton balığı, soğan, kapari, mozzarella", 170.0,
-                                        "https://images.unsplash.com/photo-1534308983496-4fabb1a015ce?auto=format&fit=crop&w=300&q=80",
+                                        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Pizza_Tonno.jpg/640px-Pizza_Tonno.jpg",
                                         pizza);
 
                         System.out.println("✅ DataSeeder: 5 kategori, 15 ürün, 10 masa eklendi!");
                 } else {
                         System.out.println("ℹ️ DataSeeder: Veritabanında zaten veri var, seed atlandı.");
+                        System.out.println("🔧 DataSeeder: Mevcut veriler için hatalı görseller düzeltiliyor...");
+
+                        java.util.List<Product> products = productRepository.findAll();
+                        for (Product p : products) {
+                                boolean updated = false;
+                                switch (p.getName()) {
+                                        case "Çay":
+                                                p.setImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Turkish_tea.jpg/640px-Turkish_tea.jpg");
+                                                updated = true;
+                                                break;
+                                        case "Ayran":
+                                                p.setImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ayran.jpg/640px-Ayran.jpg");
+                                                updated = true;
+                                                break;
+                                        case "Sütlaç":
+                                                p.setImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/S%C3%BCtla%C3%A7.jpg/640px-S%C3%BCtla%C3%A7.jpg");
+                                                updated = true;
+                                                break;
+                                        case "Adana Kebap":
+                                                p.setImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Adana_kebap.jpg/640px-Adana_kebap.jpg");
+                                                updated = true;
+                                                break;
+                                        case "Ton Balıklı Pizza":
+                                                p.setImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Pizza_Tonno.jpg/640px-Pizza_Tonno.jpg");
+                                                updated = true;
+                                                break;
+                                }
+                                if (updated) {
+                                        productRepository.save(p);
+                                }
+                        }
+                        System.out.println("✅ DataSeeder: Görsel düzeltmeleri tamamlandı.");
                 }
         }
 

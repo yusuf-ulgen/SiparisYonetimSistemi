@@ -143,13 +143,13 @@ const StaffDashboard = () => {
                     {order.status === 'NEW' && (
                         <button onClick={() => updateOrderStatus(order.id, 'PREPARING')}
                             className="flex-1 bg-[#ff8f00] hover:bg-[#e65100] text-white py-2 rounded-xl font-bold text-sm border border-[#bf360c] transition active:scale-95 shadow">
-                            👨‍🍳 Hazırlamaya Başla
+                            👨‍🍳 {t('staff.startPreparing')}
                         </button>
                     )}
                     {order.status === 'PREPARING' && (
                         <button onClick={() => updateOrderStatus(order.id, 'COMPLETED')}
                             className="flex-1 bg-[#4caf50] hover:bg-[#388e3c] text-white py-2 rounded-xl font-bold text-sm border border-[#2e7d32] transition active:scale-95 shadow">
-                            ✅ Teslim Edildi
+                            ✅ {t('staff.delivered')}
                         </button>
                     )}
                     <button onClick={() => updateOrderStatus(order.id, 'CANCELLED')}
@@ -174,21 +174,21 @@ const StaffDashboard = () => {
                     {/* Garson Çağrı Badge */}
                     {waiterCalls.length > 0 && (
                         <div className="flex items-center gap-2 bg-[#e65100] text-white px-4 py-2 rounded-full font-bold border-2 border-[#ff6d00] animate-pulse shadow-lg text-sm">
-                            🛎️ {waiterCalls.length} Garson Çağrısı
+                            🛎️ {t('staff.waiterCallBadge', { count: waiterCalls.length })}
                         </div>
                     )}
                     <div className="flex items-center gap-2 bg-[#2e4c27] text-[#aed581] px-4 py-2 rounded-full font-bold border border-[#4caf50] text-sm">
                         <span className="w-2.5 h-2.5 bg-[#81c784] rounded-full animate-pulse"></span>
-                        Sistem Aktif
+                        {t('staff.systemActive')}
                     </div>
                 </div>
             </header>
 
             {/* Tab Switcher */}
             <div className="flex gap-3 mb-6">
-                {[{ key: 'orders', label: '📋 Siparişler', count: newOrders.length + preparingOrders.length },
-                { key: 'waiter', label: '🛎️ Garson Çağrıları', count: waiterCalls.length },
-                { key: 'tables', label: '🪑 Masalar', count: null }].map(tab => (
+                {[{ key: 'orders', label: '📋 ' + t('staff.orders'), count: newOrders.length + preparingOrders.length },
+                { key: 'waiter', label: '🛎️ ' + t('staff.waiterCalls'), count: waiterCalls.length },
+                { key: 'tables', label: '🪑 ' + t('staff.tables'), count: null }].map(tab => (
                     <button key={tab.key} onClick={() => setActiveTab(tab.key)}
                         className={`px-5 py-2.5 rounded-xl font-bold text-sm border-2 transition-all flex items-center gap-2 ${activeTab === tab.key ? 'bg-[#4caf50] text-white border-[#81c784] shadow-lg' : 'bg-[rgba(0,0,0,0.3)] text-[#d7ccc8] border-[#5d4037] hover:bg-[rgba(93,64,55,0.5)]'}`}>
                         {tab.label}
@@ -205,13 +205,13 @@ const StaffDashboard = () => {
                     <div>
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-4 h-4 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
-                            <h2 className="text-xl font-extrabold text-[#f5f5f5] tracking-wider">Yeni Gelenler</h2>
+                            <h2 className="text-xl font-extrabold text-[#f5f5f5] tracking-wider">{t('staff.newOrders')}</h2>
                             <span className="ml-auto bg-red-500 text-white px-3 py-1 rounded-full text-sm font-black">{newOrders.length}</span>
                         </div>
                         <div className="space-y-4">
                             {newOrders.length === 0 ? (
                                 <div className="text-center py-12 text-[#a1887f] bg-[rgba(0,0,0,0.2)] rounded-2xl border border-[rgba(255,255,255,0.05)]">
-                                    <p className="text-2xl mb-2">🍽️</p><p className="font-bold">Bekleyen sipariş yok.</p>
+                                    <p className="text-2xl mb-2">🍽️</p><p className="font-bold">{t('staff.noNewOrders')}</p>
                                 </div>
                             ) : newOrders.map(o => <OrderCard key={o.id} order={o} />)}
                         </div>
@@ -219,13 +219,13 @@ const StaffDashboard = () => {
                     <div>
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-4 h-4 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.8)]"></div>
-                            <h2 className="text-xl font-extrabold text-[#f5f5f5] tracking-wider">Hazırlanıyor</h2>
+                            <h2 className="text-xl font-extrabold text-[#f5f5f5] tracking-wider">{t('staff.preparing')}</h2>
                             <span className="ml-auto bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-black">{preparingOrders.length}</span>
                         </div>
                         <div className="space-y-4">
                             {preparingOrders.length === 0 ? (
                                 <div className="text-center py-12 text-[#a1887f] bg-[rgba(0,0,0,0.2)] rounded-2xl border border-[rgba(255,255,255,0.05)]">
-                                    <p className="text-2xl mb-2">⏳</p><p className="font-bold">Hazırlanan sipariş yok.</p>
+                                    <p className="text-2xl mb-2">⏳</p><p className="font-bold">{t('staff.noPreparingOrders')}</p>
                                 </div>
                             ) : preparingOrders.map(o => <OrderCard key={o.id} order={o} />)}
                         </div>
@@ -238,7 +238,7 @@ const StaffDashboard = () => {
                 <div>
                     {waiterCalls.length === 0 ? (
                         <div className="text-center py-16 text-[#a1887f] bg-[rgba(0,0,0,0.2)] rounded-2xl border border-[rgba(255,255,255,0.05)]">
-                            <p className="text-3xl mb-3">🛎️</p><p className="font-bold text-lg">Bekleyen garson çağrısı yok.</p>
+                            <p className="text-3xl mb-3">🛎️</p><p className="font-bold text-lg">{t('staff.noWaiterCalls')}</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -251,7 +251,7 @@ const StaffDashboard = () => {
                                     </div>
                                     <button onClick={() => dismissWaiterCall(call.id)}
                                         className="w-full bg-[#4caf50] text-white py-2.5 rounded-xl font-bold border border-[#2e7d32] hover:bg-[#388e3c] transition active:scale-95 shadow">
-                                        ✅ Yola Çıktım
+                                        ✅ {t('staff.onMyWay')}
                                     </button>
                                 </div>
                             ))}
@@ -270,9 +270,9 @@ const StaffDashboard = () => {
                             <div className="text-3xl mb-2">{t.occupied ? '🔴' : '🟢'}</div>
                             <h3 className="font-extrabold text-white text-base">{t.tableNumber}</h3>
                             <p className={`text-xs font-bold mt-1 ${t.occupied ? 'text-[#ef9a9a]' : 'text-[#a5d6a7]'}`}>
-                                {t.occupied ? 'Dolu' : 'Boş'}
+                                {t.occupied ? t('staff.occupied') : t('staff.free')}
                             </p>
-                            <p className="text-[rgba(255,255,255,0.5)] text-xs mt-2">Değiştir</p>
+                            <p className="text-[rgba(255,255,255,0.5)] text-xs mt-2">{t('common.edit')}</p>
                         </div>
                     ))}
                 </div>

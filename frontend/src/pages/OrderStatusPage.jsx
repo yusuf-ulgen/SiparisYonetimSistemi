@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 
 const STATUS_CONFIG = {
-    NEW: { label: 'Sipariş Alındı', color: 'bg-blue-100 text-blue-700 border-blue-300', icon: '📋', step: 1 },
-    PREPARING: { label: 'Hazırlanıyor', color: 'bg-yellow-100 text-yellow-700 border-yellow-300', icon: '👨‍🍳', step: 2 },
-    COMPLETED: { label: 'Teslim Edildi ✓', color: 'bg-green-100 text-green-700 border-green-300', icon: '✅', step: 3 },
-    CANCELLED: { label: 'İptal Edildi', color: 'bg-red-100 text-red-700 border-red-300', icon: '❌', step: 0 },
+    NEW: { labelKey: 'orderStatus.received', color: 'bg-blue-100 text-blue-700 border-blue-300', icon: '📋', step: 1 },
+    PREPARING: { labelKey: 'orderStatus.preparing', color: 'bg-yellow-100 text-yellow-700 border-yellow-300', icon: '👨‍🍳', step: 2 },
+    COMPLETED: { labelKey: 'orderStatus.delivered', color: 'bg-green-100 text-green-700 border-green-300', icon: '✅', step: 3 },
+    CANCELLED: { labelKey: 'common.cancel', color: 'bg-red-100 text-red-700 border-red-300', icon: '❌', step: 0 },
 };
 
 const OrderStatusPage = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -54,10 +56,10 @@ const OrderStatusPage = () => {
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
                 <div>
-                    <h1 className="text-xl font-bold tracking-widest drop-shadow-md">Sipariş Durumum</h1>
-                    <p className="text-xs text-[#ffcc80] mt-0.5">{tableNumber} • Her 5 saniyede güncellenir</p>
+                    <h1 className="text-xl font-bold tracking-widest drop-shadow-md">{t('orderStatus.title')}</h1>
+                    <p className="text-xs text-[#ffcc80] mt-0.5">{tableNumber}</p>
                 </div>
-                <button onClick={fetchOrders} className="ml-auto p-2 bg-[#2e4c27] hover:bg-[#388e3c] rounded-full border border-[#81c784] transition active:scale-95" title="Yenile">
+                <button onClick={fetchOrders} className="ml-auto p-2 bg-[#2e4c27] hover:bg-[#388e3c] rounded-full border border-[#81c784] transition active:scale-95" title={t('orderStatus.refresh')}>
                     <svg className="w-5 h-5 text-[#dcedc8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 </button>
             </header>
@@ -66,9 +68,9 @@ const OrderStatusPage = () => {
                 {orders.length === 0 ? (
                     <div className="text-center py-20 bg-[rgba(0,0,0,0.35)] rounded-2xl border border-[rgba(255,255,255,0.1)] mt-6 backdrop-blur-sm">
                         <svg className="w-20 h-20 mx-auto text-[#5d4037] mb-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                        <h2 className="text-xl font-bold text-[#f5f5f5] mb-2">Aktif Sipariş Yok</h2>
-                        <p className="text-[#d7ccc8] mb-6">Bu masa için henüz sipariş bulunamadı.</p>
-                        <button onClick={() => navigate('/menu')} className="bg-[#4caf50] text-white px-8 py-3 rounded-xl border border-[#81c784] font-bold shadow-lg hover:bg-[#388e3c] transition active:scale-95">Menüye Git</button>
+                        <h2 className="text-xl font-bold text-[#f5f5f5] mb-2">{t('orderStatus.noOrders')}</h2>
+                        <p className="text-[#d7ccc8] mb-6">{t('orderStatus.noOrders')}</p>
+                        <button onClick={() => navigate('/menu')} className="bg-[#4caf50] text-white px-8 py-3 rounded-xl border border-[#81c784] font-bold shadow-lg hover:bg-[#388e3c] transition active:scale-95">{t('home.goToMenu')}</button>
                     </div>
                 ) : (
                     orders.map(order => {
@@ -79,10 +81,10 @@ const OrderStatusPage = () => {
                                     {/* Order Header */}
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
-                                            <span className="text-xs font-bold text-[#5d4037] uppercase tracking-widest">Sipariş #{order.id}</span>
+                                            <span className="text-xs font-bold text-[#5d4037] uppercase tracking-widest">#{order.id}</span>
                                             <div className={`inline-flex items-center gap-2 mt-1 px-3 py-1 rounded-full text-sm font-extrabold border-2 ${cfg.color}`}>
                                                 <span>{cfg.icon}</span>
-                                                <span>{cfg.label}</span>
+                                                <span>{t(cfg.labelKey)}</span>
                                             </div>
                                         </div>
                                         <span className="font-black text-[#d84315] text-xl">₺{order.totalPrice?.toFixed(2)}</span>
@@ -92,7 +94,7 @@ const OrderStatusPage = () => {
                                     {order.status !== 'CANCELLED' && (
                                         <div className="mb-4">
                                             <div className="flex justify-between mb-2">
-                                                {['Alındı', 'Hazırlanıyor', 'Teslim Edildi'].map((step, i) => (
+                                                {[t('orderStatus.received'), t('orderStatus.preparing'), t('orderStatus.delivered')].map((step, i) => (
                                                     <div key={i} className={`text-xs font-bold ${cfg.step > i ? 'text-[#4caf50]' : 'text-[#bcaaa4]'}`}>{step}</div>
                                                 ))}
                                             </div>
@@ -113,7 +115,7 @@ const OrderStatusPage = () => {
                                                     <span className="bg-[#5d4037] text-white px-2 py-0.5 rounded-md text-xs font-black">{item.quantity}x</span>
                                                     <div>
                                                         <span className="font-bold text-[#4e342e]">{item.product?.name}</span>
-                                                        {item.notes && <p className="text-xs text-[#d84315] italic">Not: {item.notes}</p>}
+                                                        {item.notes && <p className="text-xs text-[#d84315] italic">{t('cart.note')}: {item.notes}</p>}
                                                     </div>
                                                 </div>
                                                 <span className="font-bold text-[#5d4037]">₺{(item.price * item.quantity).toFixed(2)}</span>
@@ -130,7 +132,7 @@ const OrderStatusPage = () => {
                     onClick={() => navigate('/menu')}
                     className="w-full mt-4 theme-wood-bg text-[#ffcc80] border-2 border-[#ffcc80] rounded-xl py-3 font-bold text-lg shadow hover:brightness-110 active:scale-95 transition"
                 >
-                    Menüye Dön
+                    {t('home.goToMenu')}
                 </button>
             </div>
         </div>

@@ -1,23 +1,39 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const TABLES = ['Masa 1', 'Masa 2', 'Masa 3', 'Masa 4', 'Masa 5'];
 
 const HomePage = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [selectedTable, setSelectedTable] = useState('Masa 1');
+    const [siteSettings, setSiteSettings] = useState(null);
+
+    React.useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const response = await api.get('/settings');
+                setSiteSettings(response.data);
+            } catch (error) {
+                console.error("Failed to load site settings:", error);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     const sections = [
         {
-            title: 'Müşteri',
-            subtitle: 'Sipariş ver, takip et',
+            title: t('home.customerSection'),
+            subtitle: t('home.customerSubtitle'),
             icon: '🍽️',
             color: 'from-[#2e7d32] to-[#1b5e20]',
             border: 'border-[#4caf50]',
             links: [
                 {
-                    label: 'Menüyü Gör',
-                    desc: 'Ürünleri incele ve sepete ekle',
+                    label: t('home.goToMenu'),
+                    desc: t('home.menuDesc'),
                     icon: '🍜',
                     action: () => {
                         sessionStorage.setItem('tableNumber', selectedTable);
@@ -25,44 +41,44 @@ const HomePage = () => {
                     },
                 },
                 {
-                    label: 'Sipariş Durumu',
-                    desc: 'Aktif siparişlerini görüntüle',
+                    label: t('home.orderStatus'),
+                    desc: t('home.orderStatusDesc'),
                     icon: '📋',
                     action: () => navigate(`/order-status?table=${encodeURIComponent(selectedTable)}`),
                 },
             ],
         },
         {
-            title: 'Personel',
-            subtitle: 'Mutfak ve servis paneli',
+            title: t('home.staffSection'),
+            subtitle: t('home.staffSubtitle'),
             icon: '👨‍🍳',
             color: 'from-[#5d4037] to-[#3e2723]',
             border: 'border-[#a1887f]',
             links: [
                 {
-                    label: 'Mutfak Paneli',
-                    desc: 'Siparişleri görüntüle ve güncelle',
+                    label: t('home.goToStaff'),
+                    desc: t('home.staffDesc'),
                     icon: '🔥',
                     action: () => navigate('/staff'),
                 },
             ],
         },
         {
-            title: 'Yönetim',
-            subtitle: 'Admin kontrolü',
+            title: t('home.adminSection'),
+            subtitle: t('home.adminSubtitle'),
             icon: '⚙️',
             color: 'from-[#1a237e] to-[#0d47a1]',
             border: 'border-[#5c6bc0]',
             links: [
                 {
-                    label: 'Admin Paneli',
-                    desc: 'Dashboard, kategoriler, ürünler',
+                    label: t('home.goToAdmin'),
+                    desc: t('home.adminDesc'),
                     icon: '📊',
                     action: () => navigate('/admin'),
                 },
                 {
-                    label: 'Admin Girişi',
-                    desc: 'Giriş yapmak için tıkla',
+                    label: t('home.adminLogin'),
+                    desc: t('home.adminLoginDesc'),
                     icon: '🔐',
                     action: () => navigate('/admin/login'),
                 },
@@ -70,16 +86,25 @@ const HomePage = () => {
         },
     ];
 
+    const heroBgImage = siteSettings?.home_hero_bg ? `url(${siteSettings.home_hero_bg})` : '';
+
     return (
-        <div className="min-h-screen theme-leaf-bg flex flex-col items-center justify-center p-6">
+        <div
+            className="min-h-screen theme-leaf-bg flex flex-col items-center justify-center p-6 bg-cover bg-center bg-no-repeat"
+            style={heroBgImage ? { backgroundImage: heroBgImage, backgroundColor: 'rgba(0,0,0,0.6)', backgroundBlendMode: 'overlay' } : {}}
+        >
             {/* Logo / Header */}
             <div className="text-center mb-10">
-                <div className="text-6xl mb-4 drop-shadow-xl">🌿</div>
+                {siteSettings?.restaurant_logo?.startsWith('http') ? (
+                    <img src={siteSettings.restaurant_logo} alt="Logo" className="h-24 mx-auto mb-4 drop-shadow-xl" />
+                ) : (
+                    <div className="text-6xl mb-4 drop-shadow-xl">{siteSettings?.restaurant_logo || '🌿'}</div>
+                )}
                 <h1 className="text-4xl font-extrabold text-[#fff3e0] tracking-widest drop-shadow-lg">
-                    QR Sipariş Sistemi
+                    {siteSettings?.restaurant_name || t('home.title')}
                 </h1>
                 <p className="text-[#a5d6a7] font-medium mt-2 tracking-wider">
-                    Restoran Yönetim Platformu
+                    {t('home.subtitle')}
                 </p>
                 <div className="mt-4 w-24 h-1 bg-[#4caf50] mx-auto rounded-full opacity-60"></div>
             </div>
@@ -87,7 +112,7 @@ const HomePage = () => {
             {/* Table Selector */}
             <div className="mb-8 bg-[rgba(0,0,0,0.35)] rounded-2xl px-6 py-4 border border-[rgba(255,255,255,0.1)] backdrop-blur-sm w-full max-w-xl">
                 <label className="block text-[#ffcc80] text-sm font-bold mb-2 tracking-wider uppercase">
-                    🪑 Masa Seç (Müşteri Simülasyonu)
+                    🪑 {t('home.tableSimulator')}
                 </label>
                 <div className="flex flex-wrap gap-2">
                     {TABLES.map(t => (
@@ -95,8 +120,8 @@ const HomePage = () => {
                             key={t}
                             onClick={() => setSelectedTable(t)}
                             className={`px-4 py-2 rounded-full text-sm font-bold border-2 transition-all ${selectedTable === t
-                                    ? 'bg-[#4caf50] text-white border-[#81c784] shadow-[0_0_10px_rgba(76,175,80,0.5)]'
-                                    : 'bg-[#3e2723] text-[#d7ccc8] border-[#5d4037] hover:bg-[#4e342e]'
+                                ? 'bg-[#4caf50] text-white border-[#81c784] shadow-[0_0_10px_rgba(76,175,80,0.5)]'
+                                : 'bg-[#3e2723] text-[#d7ccc8] border-[#5d4037] hover:bg-[#4e342e]'
                                 }`}
                         >
                             {t}
@@ -143,10 +168,14 @@ const HomePage = () => {
                 ))}
             </div>
 
-            {/* Footer */}
-            <p className="mt-10 text-[#5d4037] text-xs font-medium tracking-wider">
-                Backend: localhost:8082 &nbsp;|&nbsp; Frontend: localhost:3000
-            </p>
+            {/* Footer / Contact Info */}
+            {(siteSettings?.contact_phone || siteSettings?.contact_address) && (
+                <div className="mt-12 text-center text-[#dcedc8] text-sm backdrop-blur-sm bg-black/20 py-2 px-6 rounded-full inline-block border border-white/10">
+                    {siteSettings.contact_phone && <span className="mx-3">📞 {siteSettings.contact_phone}</span>}
+                    {siteSettings.contact_address && <span className="mx-3">📍 {siteSettings.contact_address}</span>}
+                </div>
+            )}
+
         </div>
     );
 };

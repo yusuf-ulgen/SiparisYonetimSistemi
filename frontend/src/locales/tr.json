@@ -39,8 +39,13 @@
         "quantity": "Adet",
         "note": "Not",
         "tableNumber": "Masa",
-        "checkoutSuccess": "Siparişiniz alındı!",
-        "ordering": "Sipariş veriliyor..."
+        "checkoutSuccess": "SİPARİŞ ALINDI!",
+        "checkoutDesc": "Siparişiniz başarıyla mutfağa iletildi. Lezzetleriniz özenle hazırlanıyor.",
+        "emptyDesc": "Lezzetleri keşfetmek için ağaçların arasına karışın.",
+        "orderSummary": "Sipariş Özeti",
+        "subtotal": "Ara Toplam",
+        "serviceFee": "Servis Ücreti",
+        "ordering": "Doğaya Karışıyor..."
     },
     "orderStatus": {
         "title": "Sipariş Durumu",
@@ -85,19 +90,37 @@
         "reports": "Raporlar",
         "orderHistory": "Sipariş Geçmişi",
         "changePassword": "Şifre Değiştir",
-        "users": "Kullanıcılar"
+        "users": "Kullanıcılar",
+        "loginDesc": "Sisteme erişmek için bilgilerinizi giriniz.",
+        "usernamePlaceholder": "Örn: admin",
+        "passwordPlaceholder": "••••••••",
+        "settings": "Site Ayarları",
+        "settingsTitle": "Site Yönetimi",
+        "saveSettings": "Ayarları Kaydet",
+        "settingsDesc": "Restoran bilgilerini ve görsellerini buradan güncelleyin."
     },
     "home": {
         "title": "QR Sipariş Sistemi",
         "subtitle": "Restoran yönetim paneli",
         "customerSection": "Müşteri",
+        "customerSubtitle": "Sipariş ver, takip et",
         "staffSection": "Personel",
+        "staffSubtitle": "Mutfak ve servis paneli",
         "adminSection": "Yönetim",
+        "adminSubtitle": "Admin kontrolü",
         "scanQR": "QR Kodu Taratın",
         "selectTable": "Masa Seçin",
+        "tableSimulator": "Masa Seç (Müşteri Simülasyonu)",
         "goToMenu": "Menüye Git",
+        "menuDesc": "Ürünleri incele ve sepete ekle",
+        "orderStatus": "Sipariş Durumu",
+        "orderStatusDesc": "Aktif siparişlerini görüntüle",
         "goToStaff": "Personel Paneli",
-        "goToAdmin": "Admin Paneli"
+        "staffDesc": "Siparişleri görüntüle ve güncelle",
+        "goToAdmin": "Admin Paneli",
+        "adminDesc": "Dashboard, kategoriler, ürünler",
+        "adminLogin": "Admin Girişi",
+        "adminLoginDesc": "Giriş yapmak için tıkla"
     },
     "language": {
         "tr": "Türkçe",

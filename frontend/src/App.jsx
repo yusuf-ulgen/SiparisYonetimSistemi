@@ -19,6 +19,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminChangePassword from './pages/admin/AdminChangePassword';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminSettings from './pages/admin/AdminSettings';
 
 // Admin protected route
 const ProtectedAdminRoute = ({ children }) => {
@@ -76,6 +77,7 @@ function App() {
               <Route path="orders" element={<AdminOrders />} />
               <Route path="password" element={<AdminChangePassword />} />
               <Route path="users" element={<AdminUsers />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
 
             {/* Default redirect */}
