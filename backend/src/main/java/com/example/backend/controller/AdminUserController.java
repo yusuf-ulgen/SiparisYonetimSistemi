@@ -2,26 +2,20 @@ package com.example.backend.controller;
 
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
+import org.springframework.lang.NonNull;
 
-/**
- * Admin-only endpoints for managing staff accounts.
- * GET /api/admin/users → list all staff accounts
- * POST /api/admin/users → create new staff account
- * DELETE /api/admin/users/{id} → deactivate staff account
- */
 @RestController
 @RequestMapping("/api/admin/users")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class AdminUserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @GetMapping
     public List<User> getStaffUsers() {
@@ -42,18 +36,17 @@ public class AdminUserController {
                     .body(Map.of("message", "Bu kullanıcı adı zaten kullanılıyor"));
         }
 
-        User staff = User.builder()
-                .username(username)
-                .password(password)
-                .role(User.Role.STAFF)
-                .active(true)
-                .build();
+        User staff = new User();
+        staff.setUsername(username);
+        staff.setPassword(password);
+        staff.setRole(User.Role.STAFF);
+        staff.setActive(true);
 
         return ResponseEntity.ok(userRepository.save(staff));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deactivateStaff(@PathVariable Long id) {
+    public ResponseEntity<?> deactivateStaff(@PathVariable @NonNull Long id) {
         return userRepository.findById(id).map(user -> {
             if (user.getRole() == User.Role.ADMIN) {
                 return ResponseEntity.badRequest()

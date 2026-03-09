@@ -2,19 +2,19 @@ package com.example.backend.controller;
 
 import com.example.backend.model.Category;
 import com.example.backend.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class CategoryController {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     @GetMapping
     public List<Category> getAllCategories() {

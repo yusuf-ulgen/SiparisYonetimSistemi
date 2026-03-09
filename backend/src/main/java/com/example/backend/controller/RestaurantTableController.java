@@ -2,20 +2,18 @@ package com.example.backend.controller;
 
 import com.example.backend.model.RestaurantTable;
 import com.example.backend.repository.RestaurantTableRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tables")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class RestaurantTableController {
 
-    @Autowired
-    private RestaurantTableRepository tableRepository;
+    private final RestaurantTableRepository tableRepository;
 
     @GetMapping
     public List<RestaurantTable> getAllTables() {
@@ -23,48 +21,44 @@ public class RestaurantTableController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantTable> getTableById(@PathVariable @NonNull Long id) {
+    public ResponseEntity<RestaurantTable> getTableById(@PathVariable Long id) {
         return tableRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public RestaurantTable createTable(@RequestBody @NonNull RestaurantTable table) {
+    public RestaurantTable createTable(@RequestBody RestaurantTable table) {
         if (table.getQrCodeUrl() == null || table.getQrCodeUrl().isEmpty()) {
-            table.setQrCodeUrl("http://localhost:3003/menu?table=" + table.getTableNumber());
+            table.setQrCodeUrl("http://localhost:3000/menu?table=" + table.getTableNumber());
         }
         return tableRepository.save(table);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RestaurantTable> updateTable(@PathVariable @NonNull Long id,
-            @RequestBody @NonNull RestaurantTable tableDetails) {
-        RestaurantTable table = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Table not found"));
-
-        table.setTableNumber(tableDetails.getTableNumber());
-        table.setQrCodeUrl("http://localhost:3003/menu?table=" + tableDetails.getTableNumber());
-
-        RestaurantTable updatedTable = tableRepository.save(table);
-        return ResponseEntity.ok(updatedTable);
+    public ResponseEntity<RestaurantTable> updateTable(@PathVariable Long id,
+            @RequestBody RestaurantTable tableDetails) {
+        return tableRepository.findById(id).map((RestaurantTable table) -> {
+            table.setTableNumber(tableDetails.getTableNumber());
+            table.setQrCodeUrl("http://localhost:3000/menu?table=" + tableDetails.getTableNumber());
+            table.setOccupied(tableDetails.isOccupied());
+            return ResponseEntity.ok(tableRepository.save(table));
+        }).orElseThrow(() -> new RuntimeException("Table not found"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTable(@PathVariable @NonNull Long id) {
-        RestaurantTable table = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Table not found"));
-        tableRepository.delete(table);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> deleteTable(@PathVariable Long id) {
+        return tableRepository.findById(id).map((RestaurantTable table) -> {
+            tableRepository.delete(table);
+            return ResponseEntity.ok().<Void>build();
+        }).orElseThrow(() -> new RuntimeException("Table not found"));
     }
 
     @PostMapping("/{id}/generate-qr")
     public ResponseEntity<RestaurantTable> generateQr(@PathVariable Long id) {
-        RestaurantTable table = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Table not found"));
-
-        table.setQrCodeUrl("http://localhost:3000/menu?table=" + table.getTableNumber());
-        RestaurantTable updatedTable = tableRepository.save(table);
-        return ResponseEntity.ok(updatedTable);
+        return tableRepository.findById(id).map((RestaurantTable table) -> {
+            table.setQrCodeUrl("http://localhost:3000/menu?table=" + table.getTableNumber());
+            return ResponseEntity.ok(tableRepository.save(table));
+        }).orElseThrow(() -> new RuntimeException("Table not found"));
     }
 }

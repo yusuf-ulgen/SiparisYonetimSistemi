@@ -134,11 +134,16 @@ const StaffDashboard = () => {
                             <span className="bg-[#5d4037] text-white px-2 py-0.5 rounded-md text-xs font-black">{item.quantity}x</span>
                             <div>
                                 <span className="font-bold text-[#4e342e]">{item.product?.name}</span>
-                                {item.notes && <p className="text-xs text-[#e65100] italic">📝 {item.notes}</p>}
                             </div>
                         </li>
                     ))}
                 </ul>
+                {order.note && (
+                    <div className="bg-[#fff3e0] border-l-4 border-[#ffb74d] p-3 mb-4 rounded-r-md">
+                        <p className="text-xs font-bold text-[#e65100] mb-1">Müşteri Notu:</p>
+                        <p className="text-sm text-[#6d4c41] italic">{order.note}</p>
+                    </div>
+                )}
                 <div className="flex gap-2">
                     {order.status === 'NEW' && (
                         <button onClick={() => updateOrderStatus(order.id, 'PREPARING')}
@@ -263,14 +268,14 @@ const StaffDashboard = () => {
             {/* Masalar Sekmesi */}
             {activeTab === 'tables' && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {tables.map(t => (
-                        <div key={t.id}
-                            className={`rounded-2xl border-3 p-5 text-center shadow-lg cursor-pointer transition-all active:scale-95 border-2 ${t.occupied ? 'bg-[#b71c1c] border-[#ef9a9a] shadow-red-900/50' : 'bg-[#1b5e20] border-[#a5d6a7] shadow-green-900/50'}`}
-                            onClick={() => toggleTableOccupied(t)}>
-                            <div className="text-3xl mb-2">{t.occupied ? '🔴' : '🟢'}</div>
-                            <h3 className="font-extrabold text-white text-base">{t.tableNumber}</h3>
-                            <p className={`text-xs font-bold mt-1 ${t.occupied ? 'text-[#ef9a9a]' : 'text-[#a5d6a7]'}`}>
-                                {t.occupied ? t('staff.occupied') : t('staff.free')}
+                    {tables.map(table => (
+                        <div key={table.id}
+                            className={`rounded-2xl border-3 p-5 text-center shadow-lg cursor-pointer transition-all active:scale-95 border-2 ${table.occupied ? 'bg-[#b71c1c] border-[#ef9a9a] shadow-red-900/50' : 'bg-[#1b5e20] border-[#a5d6a7] shadow-green-900/50'}`}
+                            onClick={() => toggleTableOccupied(table)}>
+                            <div className="text-3xl mb-2">{table.occupied ? '🔴' : '🟢'}</div>
+                            <h3 className="font-extrabold text-white text-base">{table.tableNumber}</h3>
+                            <p className={`text-xs font-bold mt-1 ${table.occupied ? 'text-[#ef9a9a]' : 'text-[#a5d6a7]'}`}>
+                                {table.occupied ? t('staff.occupied') : t('staff.free')}
                             </p>
                             <p className="text-[rgba(255,255,255,0.5)] text-xs mt-2">{t('common.edit')}</p>
                         </div>

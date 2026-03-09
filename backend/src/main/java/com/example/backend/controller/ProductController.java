@@ -4,24 +4,21 @@ import com.example.backend.model.Category;
 import com.example.backend.model.Product;
 import com.example.backend.repository.CategoryRepository;
 import com.example.backend.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     // Tüm ürünleri getir (Admin Paneli İçin)
     @GetMapping
@@ -42,7 +39,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody @NonNull Product productRequest) {
+    public ResponseEntity<Product> createProduct(@RequestBody Product productRequest) {
         if (productRequest.getCategory() != null && productRequest.getCategory().getId() != null) {
             Category category = categoryRepository.findById(productRequest.getCategory().getId())
                     .orElseThrow(() -> new RuntimeException("Category not found"));
@@ -53,8 +50,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable @NonNull Long id,
-            @RequestBody @NonNull Product productDetails) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id,
+            @RequestBody Product productDetails) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
@@ -75,7 +72,7 @@ public class ProductController {
 
     // Ürünü sil
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable @NonNull Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         productRepository.delete(product);
@@ -84,7 +81,7 @@ public class ProductController {
 
     // Ürünü ID'ye göre getir
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable @NonNull Long id) {
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
         return productRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

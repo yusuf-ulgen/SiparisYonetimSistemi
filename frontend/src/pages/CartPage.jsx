@@ -13,6 +13,7 @@ const CartPage = () => {
     const { t } = useTranslation();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
+    const [orderNote, setOrderNote] = useState('');
 
     // Extract table number from URL params if exists (e.g. ?table=Masa 1)
     const queryParams = new URLSearchParams(location.search);
@@ -30,11 +31,12 @@ const CartPage = () => {
         const orderData = {
             tableNumber: tableNumber,
             totalPrice: getCartTotal(),
+            note: orderNote, // <<< Send order note here
             items: cartItems.map(item => ({
                 product: { id: item.product.id },
                 quantity: item.quantity,
-                price: item.product.price,
-                notes: item.notes || ""
+                price: item.product.price
+                // notes removed from item level
             }))
         };
 
@@ -56,7 +58,7 @@ const CartPage = () => {
     };
 
     if (orderSuccess) {
-        const t = queryParams.get('table') || sessionStorage.getItem('tableNumber') || '';
+        const tableStr = queryParams.get('table') || sessionStorage.getItem('tableNumber') || '';
         return (
             <div className="min-h-screen theme-wood-bg flex flex-col items-center justify-center p-6 text-center border-4 border-[#3e2723]">
                 <div className="bg-[#2e4c27] text-[#aed581] p-6 rounded-full mb-8 relative border-4 border-[#4caf50] shadow-[0_0_30px_rgba(76,175,80,0.5)]">
@@ -104,7 +106,6 @@ const CartPage = () => {
                                         <div className="pr-4">
                                             <h3 className="font-extrabold text-[#4e342e] text-lg leading-tight">{item.product.name}</h3>
                                             <p className="font-extrabold text-[#d84315] mt-1 text-xl drop-shadow-sm">₺{item.product.price.toFixed(2)}</p>
-                                            {item.notes && <p className="text-xs text-[#6d4c41] italic mt-1 bg-[#fff3e0] px-2 py-1 rounded-md border border-[#ffe0b2]">📝 {item.notes}</p>}
                                         </div>
                                         <button
                                             onClick={() => removeFromCart(item.product.id)}
@@ -139,6 +140,19 @@ const CartPage = () => {
                         {/* Order Summary */}
                         <div className="theme-wood-card p-6 rounded-2xl shadow-xl border-4 border-[#3e2723] mt-8 mb-24">
                             <h3 className="font-extrabold text-[#f5f5f5] mb-5 border-b-2 border-[#5d4037] pb-3 text-xl tracking-wider drop-shadow-md">{t('cart.orderSummary')}</h3>
+
+                            {/* Order Note Field */}
+                            <div className="mb-5 border-b border-[#5d4037] pb-5">
+                                <label className="block text-[#ffcc80] font-bold mb-2">Sipariş Notu Ekle:</label>
+                                <textarea
+                                    className="w-full bg-[#f5f5f5] text-[#3e2723] border border-[#795548] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#81c784] font-medium resize-none shadow-inner"
+                                    rows="2"
+                                    placeholder="Ekstra isteklerinizi veya notlarınızı buraya yazabilirsiniz..."
+                                    value={orderNote}
+                                    onChange={(e) => setOrderNote(e.target.value)}
+                                ></textarea>
+                            </div>
+
                             <div className="flex justify-between mb-3 text-[#ffcc80] font-medium">
                                 <span>{t('cart.subtotal')}</span>
                                 <span>₺{cartTotal.toFixed(2)}</span>

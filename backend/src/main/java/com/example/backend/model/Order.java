@@ -33,6 +33,8 @@ public class Order {
     @Column(nullable = false)
     private Double totalPrice;
 
+    private String note;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;

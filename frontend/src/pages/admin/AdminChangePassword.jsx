@@ -3,8 +3,13 @@ import api from '../../services/api';
 
 const AdminChangePassword = () => {
     const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    const [showPasswords, setShowPasswords] = useState({ current: false, new: false, confirm: false });
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState(null); // { text, success }
+
+    const toggleVisibility = (field) => {
+        setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,8 +33,10 @@ const AdminChangePassword = () => {
     };
 
     return (
-        <div>
-            <h2 className="text-2xl font-extrabold text-[#f5f5f5] mb-6 tracking-wider drop-shadow-md">Şifre Değiştir</h2>
+        <div className="p-2">
+            <div className="flex justify-between items-center mb-8 bg-[#4e342e] theme-wood-bg p-4 rounded-xl shadow-[0_8px_20px_rgba(0,0,0,0.5)] border-2 border-[#3e2723]">
+                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">Şifre Değiştir</h1>
+            </div>
 
             <div className="max-w-md">
                 <div className="theme-wood-card p-6 rounded-2xl shadow-xl border-2 border-[#5d4037]">
@@ -40,14 +47,40 @@ const AdminChangePassword = () => {
                                     <label className="block text-[#5d4037] font-bold text-sm mb-1">
                                         {i === 0 ? 'Mevcut Şifre' : i === 1 ? 'Yeni Şifre' : 'Yeni Şifre (Tekrar)'}
                                     </label>
-                                    <input
-                                        type="password"
-                                        value={form[field]}
-                                        onChange={e => setForm(prev => ({ ...prev, [field]: e.target.value }))}
-                                        className="w-full border-2 border-[#d7ccc8] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#5d4037] outline-none text-[#3e2723] bg-white"
-                                        placeholder={i === 0 ? '••••••••' : 'En az 6 karakter'}
-                                        required
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={
+                                                field === 'currentPassword' ? (showPasswords.current ? 'text' : 'password') :
+                                                    field === 'newPassword' ? (showPasswords.new ? 'text' : 'password') :
+                                                        (showPasswords.confirm ? 'text' : 'password')
+                                            }
+                                            value={form[field]}
+                                            onChange={e => setForm(prev => ({ ...prev, [field]: e.target.value }))}
+                                            className="w-full border-2 border-[#d7ccc8] rounded-xl px-4 py-3 pr-12 focus:ring-2 focus:ring-[#5d4037] outline-none text-[#3e2723] bg-white"
+                                            placeholder={i === 0 ? '••••••••' : 'En az 6 karakter'}
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleVisibility(field === 'currentPassword' ? 'current' : field === 'newPassword' ? 'new' : 'confirm')}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5d4037] hover:text-[#3e2723] transition-colors p-2"
+                                            title={
+                                                (field === 'currentPassword' ? showPasswords.current : field === 'newPassword' ? showPasswords.new : showPasswords.confirm)
+                                                    ? 'Gizle' : 'Göster'
+                                            }
+                                        >
+                                            {(field === 'currentPassword' ? showPasswords.current : field === 'newPassword' ? showPasswords.new : showPasswords.confirm) ? (
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                                </svg>
+                                            ) : (
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
 
@@ -66,13 +99,6 @@ const AdminChangePassword = () => {
                             </button>
                         </form>
                     </div>
-                </div>
-
-                <div className="mt-4 bg-[rgba(0,0,0,0.2)] rounded-xl p-4 border border-[rgba(255,255,255,0.1)]">
-                    <p className="text-[#a5d6a7] text-xs font-medium">
-                        💡 Şifre değişikliği yalnızca sunucu yeniden başlatılana kadar geçerlidir.
-                        Kalıcı şifre için Phase 2 (Kullanıcı Rolleri) gereklidir.
-                    </p>
                 </div>
             </div>
         </div>

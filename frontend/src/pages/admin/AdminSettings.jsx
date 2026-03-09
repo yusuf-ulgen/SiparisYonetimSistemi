@@ -46,16 +46,20 @@ const AdminSettings = () => {
             setSuccessMessage(t('admin.settings') + ' başarıyla güncellendi.');
         } catch (error) {
             console.error('Failed to update settings:', error);
-            setErrorMessage('Ayarlar güncellenirken bir hata oluştu.');
+            setErrorMessage(error.response?.data?.message || 'Ayarlar güncellenirken bir hata oluştu.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="p-8 pb-32">
-            <h1 className="text-3xl font-extrabold text-[#3e2723] mb-2">{t('admin.settingsTitle')}</h1>
-            <p className="text-[#5d4037] mb-8">{t('admin.settingsDesc')}</p>
+        <div className="p-2">
+            <div className="flex justify-between items-center mb-8 bg-[#4e342e] theme-wood-bg p-4 rounded-xl shadow-[0_8px_20px_rgba(0,0,0,0.5)] border-2 border-[#3e2723]">
+                <div className="ml-2">
+                    <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] leading-none">{t('admin.settingsTitle')}</h1>
+                    <p className="text-[#ffcc80] text-xs font-bold mt-1 opacity-80 uppercase tracking-widest">{t('admin.settingsDesc')}</p>
+                </div>
+            </div>
 
             {successMessage && (
                 <div className="bg-[#e8f5e9] text-[#2e7d32] p-4 rounded-lg mb-6 border border-[#a5d6a7]">

@@ -2,20 +2,20 @@ package com.example.backend.controller;
 
 import com.example.backend.model.WaiterCall;
 import com.example.backend.repository.WaiterCallRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
+import org.springframework.lang.NonNull;
 
 @RestController
 @RequestMapping("/api/waiter-calls")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class WaiterCallController {
 
-    @Autowired
-    private WaiterCallRepository waiterCallRepository;
+    private final WaiterCallRepository waiterCallRepository;
 
     // Müşteri garson çağırır
     @PostMapping
@@ -35,7 +35,7 @@ public class WaiterCallController {
 
     // Staff çağrıyı kapatır
     @PutMapping("/{id}/dismiss")
-    public ResponseEntity<WaiterCall> dismissCall(@PathVariable Long id) {
+    public ResponseEntity<WaiterCall> dismissCall(@PathVariable @NonNull Long id) {
         return waiterCallRepository.findById(id).map(call -> {
             call.setDismissed(true);
             return ResponseEntity.ok(waiterCallRepository.save(call));

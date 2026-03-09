@@ -11,7 +11,7 @@ const AdminReports = () => {
 
     const fetchOrders = async () => {
         try {
-            const res = await api.get('/orders');
+            const res = await api.get('/orders/all');
             // Assuming we only care about COMPLETED orders for revenue
             const completed = res.data.filter(o => o.status === 'COMPLETED');
             // Sort by ID descending (newest first)

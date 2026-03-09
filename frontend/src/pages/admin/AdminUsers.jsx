@@ -5,6 +5,7 @@ const AdminUsers = () => {
     const [staffList, setStaffList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({ username: '', password: '' });
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [saving, setSaving] = useState(false);
@@ -42,10 +43,10 @@ const AdminUsers = () => {
     };
 
     return (
-        <div>
-            <h2 className="text-2xl font-extrabold text-[#f5f5f5] mb-6 tracking-wider drop-shadow-md">
-                Kullanıcı Yönetimi
-            </h2>
+        <div className="p-2">
+            <div className="flex justify-between items-center mb-8 bg-[#4e342e] theme-wood-bg p-4 rounded-xl shadow-[0_8px_20px_rgba(0,0,0,0.5)] border-2 border-[#3e2723]">
+                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">Kullanıcı Yönetimi</h1>
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Add Staff Form */}
@@ -65,14 +66,33 @@ const AdminUsers = () => {
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-[#5d4037] mb-1">Şifre (min 6 karakter)</label>
-                                <input
-                                    type="password" required
-                                    value={form.password}
-                                    onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                                    className="w-full border-2 border-[#d7ccc8] rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-[#5d4037] outline-none text-[#3e2723]"
-                                    placeholder="en az 6 karakter"
-                                    minLength={6}
-                                />
+                                <div className="relative">
+                                    <input
+                                        type={showPassword ? 'text' : 'password'} required
+                                        value={form.password}
+                                        onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                                        className="w-full border-2 border-[#d7ccc8] rounded-xl px-4 py-2.5 pr-12 focus:ring-2 focus:ring-[#5d4037] outline-none text-[#3e2723]"
+                                        placeholder="en az 6 karakter"
+                                        minLength={6}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5d4037] hover:text-[#3e2723] transition-colors p-2"
+                                        title={showPassword ? 'Gizle' : 'Göster'}
+                                    >
+                                        {showPassword ? (
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                            </svg>
+                                        ) : (
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        )}
+                                    </button>
+                                </div>
                             </div>
                             {error && <p className="text-red-600 text-sm font-bold bg-red-50 p-2 rounded-lg">❌ {error}</p>}
                             {success && <p className="text-green-600 text-sm font-bold bg-green-50 p-2 rounded-lg">{success}</p>}

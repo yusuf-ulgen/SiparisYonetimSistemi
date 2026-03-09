@@ -12,7 +12,7 @@ const AdminDashboard = () => {
         const fetchStats = async () => {
             try {
                 const [ordersRes, productsRes] = await Promise.all([
-                    api.get('/orders'),
+                    api.get('/orders/all'),
                     api.get('/products')
                 ]);
 

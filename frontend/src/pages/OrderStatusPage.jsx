@@ -87,7 +87,7 @@ const OrderStatusPage = () => {
                                                 <span>{t(cfg.labelKey)}</span>
                                             </div>
                                         </div>
-                                        <span className="font-black text-[#d84315] text-xl">₺{order.totalPrice?.toFixed(2)}</span>
+                                        <span className="font-black text-[#d84315] text-xl">₺{Number(order.totalPrice || 0).toFixed(2)}</span>
                                     </div>
 
                                     {/* Progress Bar */}
@@ -115,13 +115,18 @@ const OrderStatusPage = () => {
                                                     <span className="bg-[#5d4037] text-white px-2 py-0.5 rounded-md text-xs font-black">{item.quantity}x</span>
                                                     <div>
                                                         <span className="font-bold text-[#4e342e]">{item.product?.name}</span>
-                                                        {item.notes && <p className="text-xs text-[#d84315] italic">{t('cart.note')}: {item.notes}</p>}
                                                     </div>
                                                 </div>
-                                                <span className="font-bold text-[#5d4037]">₺{(item.price * item.quantity).toFixed(2)}</span>
+                                                <span className="font-bold text-[#5d4037]">₺{Number((item.price || 0) * (item.quantity || 1)).toFixed(2)}</span>
                                             </li>
                                         ))}
                                     </ul>
+                                    {order.note && (
+                                        <div className="mt-4 bg-[#fff3e0] border-l-4 border-[#ffb74d] p-3 rounded-r-md">
+                                            <p className="text-xs font-bold text-[#e65100] mb-1">{t('cart.note')}:</p>
+                                            <p className="text-sm text-[#6d4c41] italic">{order.note}</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         );

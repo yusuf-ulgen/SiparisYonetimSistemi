@@ -15,22 +15,17 @@ export const CartProvider = ({ children }) => {
         sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    const addToCart = (product, quantity = 1, notes = "") => {
+    const addToCart = (product, quantity = 1) => {
         setCartItems(prevItems => {
             const existingItemIndex = prevItems.findIndex(item => item.product.id === product.id);
 
             if (existingItemIndex > -1) {
                 const newItems = [...prevItems];
                 newItems[existingItemIndex].quantity += quantity;
-                if (notes) {
-                    newItems[existingItemIndex].notes = newItems[existingItemIndex].notes
-                        ? newItems[existingItemIndex].notes + ", " + notes
-                        : notes;
-                }
                 return newItems;
             }
 
-            return [...prevItems, { product, quantity, notes }];
+            return [...prevItems, { product, quantity }];
         });
     };
 

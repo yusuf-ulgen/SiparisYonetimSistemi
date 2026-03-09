@@ -2,18 +2,17 @@ package com.example.backend.controller;
 
 import com.example.backend.model.Order;
 import com.example.backend.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
 @CrossOrigin(origins = "*") // Allow React to connect
+@RequiredArgsConstructor
 public class OrderController {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     // List all active orders (for Staff Dashboard)
     @GetMapping

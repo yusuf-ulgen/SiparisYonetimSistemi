@@ -12,8 +12,6 @@ const CustomerMenu = () => {
     const [loading, setLoading] = useState(true);
     const [waiterCalled, setWaiterCalled] = useState(false);
     const [waiterLoading, setWaiterLoading] = useState(false);
-    // Note modal state
-    const [noteModal, setNoteModal] = useState({ open: false, product: null, note: '' });
 
     const { addToCart, getCartItemCount, getCartTotal } = useCart();
     const { t } = useTranslation();
@@ -52,15 +50,9 @@ const CustomerMenu = () => {
         ? products.filter(p => Number(p.category?.id) === Number(activeCategory))
         : products;
 
-    const handleAddWithNote = (product) => {
-        setNoteModal({ open: true, product, note: '' });
-    };
-
-    const confirmAddToCart = () => {
-        if (noteModal.product) {
-            addToCart(noteModal.product, 1, noteModal.note);
-            setNoteModal({ open: false, product: null, note: '' });
-        }
+    const handleAddToCart = (product) => {
+        addToCart(product, 1);
+        // Optional tracking or mini-toast could go here
     };
 
 
@@ -187,7 +179,7 @@ const CustomerMenu = () => {
                                             className="w-full h-32 object-cover"
                                         />
                                         <button
-                                            onClick={(e) => { e.stopPropagation(); handleAddWithNote(product); }}
+                                            onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
                                             className="absolute bottom-2 right-2 bg-[#4caf50] text-white p-2 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.5)] border border-[#81c784] hover:bg-[#388e3c] transform transition active:scale-90"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
@@ -224,39 +216,6 @@ const CustomerMenu = () => {
                 </div>
             )}
 
-            {/* Not Ekleme Modal */}
-            {noteModal.open && (
-                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-[#fff8e1] rounded-2xl shadow-2xl w-full max-w-sm p-6 border-4 border-[#5d4037]">
-                        <h2 className="text-xl font-extrabold text-[#4e342e] mb-1">{noteModal.product?.name}</h2>
-                        <p className="text-[#d84315] font-bold text-lg mb-4">
-                            ₺{typeof noteModal.product?.price === 'number' ? noteModal.product.price.toFixed(2) : parseFloat(noteModal.product?.price || 0).toFixed(2)}
-                        </p>
-                        <label className="block text-sm font-bold text-[#5d4037] mb-2">{t('menu.note')}</label>
-                        <textarea
-                            className="w-full border-2 border-[#d7ccc8] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#5d4037] outline-none font-medium resize-none bg-white text-[#3e2723]"
-                            rows="3"
-                            placeholder={t('menu.notePlaceholder')}
-                            value={noteModal.note}
-                            onChange={(e) => setNoteModal(prev => ({ ...prev, note: e.target.value }))}
-                        />
-                        <div className="flex gap-3 mt-4">
-                            <button
-                                onClick={() => setNoteModal({ open: false, product: null, note: '' })}
-                                className="flex-1 py-3 border-2 border-[#d7ccc8] rounded-xl text-[#5d4037] font-bold hover:bg-[#ffe0b2] transition"
-                            >
-                                {t('common.cancel')}
-                            </button>
-                            <button
-                                onClick={confirmAddToCart}
-                                className="flex-1 py-3 bg-[#4caf50] text-white rounded-xl font-bold border border-[#2e7d32] shadow hover:bg-[#388e3c] transition active:scale-95"
-                            >
-                                {t('menu.addToCart')}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

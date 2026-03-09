@@ -62,7 +62,7 @@ const AdminProducts = () => {
         const payload = {
             ...currentProduct,
             price: parseFloat(currentProduct.price),
-            category: { id: parseInt(currentProduct.category.id) }
+            category: currentProduct.category?.id ? { id: parseInt(currentProduct.category.id) } : null
         };
 
         try {

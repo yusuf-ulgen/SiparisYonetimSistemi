@@ -2,10 +2,9 @@ package com.example.backend.controller;
 
 import com.example.backend.model.SiteSettings;
 import com.example.backend.repository.SiteSettingsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +13,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/settings")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class SiteSettingsController {
 
-    @Autowired
-    private SiteSettingsRepository siteSettingsRepository;
+    private final SiteSettingsRepository siteSettingsRepository;
 
     // Public endpoint: Returns all settings as a key-value map for the frontend to
     // consume easily
@@ -44,11 +43,10 @@ public class SiteSettingsController {
                 existing.setSettingValue(entry.getValue());
                 siteSettingsRepository.save(existing);
             } else {
-                SiteSettings newSetting = SiteSettings.builder()
-                        .settingKey(entry.getKey())
-                        .settingValue(entry.getValue())
-                        .description("Oluşturuldu: " + entry.getKey())
-                        .build();
+                SiteSettings newSetting = new SiteSettings();
+                newSetting.setSettingKey(entry.getKey());
+                newSetting.setSettingValue(entry.getValue());
+                newSetting.setDescription("Oluşturuldu: " + entry.getKey());
                 siteSettingsRepository.save(newSetting);
             }
         }
