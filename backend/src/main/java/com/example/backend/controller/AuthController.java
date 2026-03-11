@@ -4,6 +4,7 @@ import com.example.backend.dto.AuthRequest;
 import com.example.backend.dto.AuthResponse;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.security.JwtUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +28,24 @@ public class AuthController {
         if (request.getUsername() == null || request.getPassword() == null) {
             return ResponseEntity.badRequest().body(new AuthResponse(null, "Username and password required"));
         }
+        System.out.println("🔐 Auth Login attempt for: " + request.getUsername());
         return userRepository.findByUsername(request.getUsername())
-                .filter(user -> Boolean.TRUE.equals(user.getActive())
-                        && passwordEncoder.matches(request.getPassword(), user.getPassword()))
+                .filter(user -> {
+                    boolean active = Boolean.TRUE.equals(user.getActive());
+                    boolean passMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
+                    System.out.println("🔍 User found. Active: " + active + ", Pass OK: " + passMatch);
+                    return active && passMatch;
+                })
                 .map(user -> {
-                    String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
+                    String roleStr = user.getRole() != null ? user.getRole().toString() : "STAFF";
+                    String token = jwtUtil.generateToken(user.getUsername(), roleStr);
+                    System.out.println("✅ Auth Login successful for: " + user.getUsername());
                     return ResponseEntity.ok(new AuthResponse(token, "Login successful"));
                 })
-                .orElse(ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
-                        .body(new AuthResponse(null, "Invalid username or password")));
+                .orElseGet(() -> {
+                    System.out.println("❌ Auth Login failed: User not found or mismatch for " + request.getUsername());
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(new AuthResponse(null, "Invalid username or password"));
+                });
     }
 }

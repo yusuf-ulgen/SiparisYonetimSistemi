@@ -28,16 +28,28 @@ public class AdminController {
         if (request.getUsername() == null || request.getPassword() == null) {
             return ResponseEntity.badRequest().body(new AuthResponse(null, "Username and password required"));
         }
+        System.out.println("🔐 Admin Login attempt for: " + request.getUsername());
         return userRepository.findByUsername(request.getUsername())
-                .filter(user -> Boolean.TRUE.equals(user.getActive()) &&
-                        user.getRole() == User.Role.ADMIN &&
-                        passwordEncoder.matches(request.getPassword(), user.getPassword()))
+                .filter(user -> {
+                    boolean active = Boolean.TRUE.equals(user.getActive());
+                    boolean roleMatch = user.getRole() == User.Role.ADMIN;
+                    boolean passMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
+                    System.out.println(
+                            "🔍 User found. Active: " + active + ", Role OK: " + roleMatch + ", Pass OK: " + passMatch);
+                    return active && roleMatch && passMatch;
+                })
                 .map(user -> {
-                    String token = jwtUtil.generateToken(user.getUsername(), "ADMIN");
+                    String token = jwtUtil.generateToken(user.getUsername(), user.getRole().toString());
+                    System.out.println("✅ Admin Login successful for: " + user.getUsername());
                     return ResponseEntity.ok(new AuthResponse(token, "Login successful"));
                 })
-                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new AuthResponse(null, "Invalid username or password")));
+                .orElseGet(() -> {
+                    System.out.println(
+                            "❌ Admin Login failed: User not found, inactive, wrong role, or invalid credentials for "
+                                    + request.getUsername());
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(new AuthResponse(null, "Invalid username or password"));
+                });
     }
 
     @PutMapping("/password")
@@ -46,6 +58,7 @@ public class AdminController {
         String newPass = body.get("newPassword");
 
         if (newPass == null || newPass.length() < 6) {
+            System.out.println("❌ Admin password change failed: New password too short or null.");
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "Yeni şifre en az 6 karakter olmalıdır"));
         }
@@ -54,18 +67,22 @@ public class AdminController {
         if (adminOpt.isPresent()) {
             User admin = adminOpt.get();
             if (!passwordEncoder.matches(currentPass, admin.getPassword())) {
+                System.out.println("❌ Admin password change failed: Current password mismatch.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("message", "Mevcut şifre hatalı"));
             }
             if (passwordEncoder.matches(newPass, admin.getPassword())) {
+                System.out.println("❌ Admin password change failed: New password is same as old password.");
                 return ResponseEntity.badRequest()
                         .body(Map.of("message", "Yeni şifre eski şifre ile aynı olamaz"));
             }
             admin.setPassword(passwordEncoder.encode(newPass));
             userRepository.save(admin);
+            System.out.println("✅ Admin password successfully changed.");
             return ResponseEntity.ok(Map.of("message", "Şifre başarıyla güncellendi"));
         }
 
+        System.out.println("❌ Admin password change failed: Admin user not found.");
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("message", "Admin kullanıcısı bulunamadı"));
     }
