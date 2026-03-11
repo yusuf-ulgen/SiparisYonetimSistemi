@@ -30,6 +30,7 @@ const AdminLogin = () => {
                 }
             }
         } catch (err) {
+            console.error('Login error full object:', err);
             setError('Geçersiz kullanıcı adı veya şifre.');
         } finally {
             setLoading(false);
