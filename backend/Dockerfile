@@ -2,7 +2,7 @@
 FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests -Dspring-boot.repackage.mainClass=com.example.backend.BackendApplication
+RUN mvn clean package -DskipTests
 
 # 2. Aşama: Uygulamayı çalıştırma (Run)
 # 'openjdk' yerine güncel ve güvenilir 'eclipse-temurin' kullanıyoruz
