@@ -171,12 +171,12 @@ public class DataSeeder implements CommandLineRunner {
 
                         // Mevcut verilerde varsa STAFF hesabı da şifreli oluştur (Garsonlar için)
                         if (!userRepository.existsByUsername("garson")) {
-                                userRepository.save(User.builder()
+                                userRepository.save(Objects.requireNonNull(User.builder()
                                                 .username("garson")
                                                 .password(passwordEncoder.encode("garson"))
                                                 .role(User.Role.STAFF)
                                                 .active(true)
-                                                .build());
+                                                .build()));
                         }
 
                         System.out.println("🔧 DataSeeder: Mevcut veriler için hatalı görseller düzeltiliyor...");

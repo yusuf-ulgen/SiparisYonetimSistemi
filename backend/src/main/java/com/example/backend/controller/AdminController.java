@@ -25,9 +25,13 @@ public class AdminController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        return userRepository.findByUsernameAndActiveTrue(request.getUsername())
-                .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPassword())
-                        && user.getRole() == User.Role.ADMIN)
+        if (request.getUsername() == null || request.getPassword() == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse(null, "Username and password required"));
+        }
+        return userRepository.findByUsername(request.getUsername())
+                .filter(user -> user.isActive() &&
+                        user.getRole() == User.Role.ADMIN &&
+                        passwordEncoder.matches(request.getPassword(), user.getPassword()))
                 .map(user -> {
                     String token = jwtUtil.generateToken(user.getUsername(), "ADMIN");
                     return ResponseEntity.ok(new AuthResponse(token, "Login successful"));

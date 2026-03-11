@@ -8,6 +8,7 @@ import api from '../services/api';
 const HomePage = () => {
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const [selectedTable, setSelectedTable] = useState('Masa 1');
     const [siteSettings, setSiteSettings] = useState(null);
 
     React.useEffect(() => {
@@ -23,6 +24,30 @@ const HomePage = () => {
     }, []);
 
     const sections = [
+        {
+            title: t('home.customerSection'),
+            subtitle: t('home.customerSubtitle'),
+            icon: '🍽️',
+            color: 'from-[#2e7d32] to-[#1b5e20]',
+            border: 'border-[#4caf50]',
+            links: [
+                {
+                    label: t('home.goToMenu'),
+                    desc: t('home.menuDesc'),
+                    icon: '🍜',
+                    action: () => {
+                        sessionStorage.setItem('tableNumber', selectedTable);
+                        navigate(`/menu?table=${encodeURIComponent(selectedTable)}`);
+                    },
+                },
+                {
+                    label: t('home.orderStatus'),
+                    desc: t('home.orderStatusDesc'),
+                    icon: '📋',
+                    action: () => navigate(`/order-status?table=${encodeURIComponent(selectedTable)}`),
+                },
+            ],
+        },
         {
             title: t('home.staffSection'),
             subtitle: t('home.staffSubtitle'),
@@ -85,7 +110,7 @@ const HomePage = () => {
             </div>
 
             {/* Role Sections */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
                 {sections.map(section => (
                     <div
                         key={section.title}

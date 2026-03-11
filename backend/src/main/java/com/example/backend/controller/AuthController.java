@@ -24,8 +24,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        return userRepository.findByUsernameAndActiveTrue(request.getUsername())
-                .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPassword()))
+        if (request.getUsername() == null || request.getPassword() == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse(null, "Username and password required"));
+        }
+        return userRepository.findByUsername(request.getUsername())
+                .filter(user -> user.isActive() && passwordEncoder.matches(request.getPassword(), user.getPassword()))
                 .map(user -> {
                     String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name());
                     return ResponseEntity.ok(new AuthResponse(token, "Login successful"));
