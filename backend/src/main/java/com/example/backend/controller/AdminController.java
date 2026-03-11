@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 import java.util.Optional;
 import com.example.backend.dto.AuthRequest;
@@ -59,7 +58,7 @@ public class AdminController {
         if (newPass == null || newPass.length() < 6) {
             System.out.println("❌ Admin password change failed: New password too short or null.");
             return ResponseEntity.badRequest()
-                    .body(Map.of("message", "Yeni şifre en az 6 karakter olmalıdır"));
+                    .body(Map.of("message", "New password must be at least 6 characters long"));
         }
 
         Optional<User> adminOpt = userRepository.findByUsernameAndActiveTrue("admin");
@@ -68,21 +67,21 @@ public class AdminController {
             if (!passwordEncoder.matches(currentPass, admin.getPassword())) {
                 System.out.println("❌ Admin password change failed: Current password mismatch.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of("message", "Mevcut şifre hatalı"));
+                        .body(Map.of("message", "Current password is incorrect"));
             }
             if (passwordEncoder.matches(newPass, admin.getPassword())) {
                 System.out.println("❌ Admin password change failed: New password is same as old password.");
                 return ResponseEntity.badRequest()
-                        .body(Map.of("message", "Yeni şifre eski şifre ile aynı olamaz"));
+                        .body(Map.of("message", "New password cannot be the same as the old password"));
             }
             admin.setPassword(passwordEncoder.encode(newPass));
             userRepository.save(admin);
             System.out.println("✅ Admin password successfully changed.");
-            return ResponseEntity.ok(Map.of("message", "Şifre başarıyla güncellendi"));
+            return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
         }
 
         System.out.println("❌ Admin password change failed: Admin user not found.");
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("message", "Admin kullanıcısı bulunamadı"));
+                .body(Map.of("message", "Admin user not found"));
     }
 }

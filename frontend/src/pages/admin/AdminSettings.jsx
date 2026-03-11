@@ -26,7 +26,7 @@ const AdminSettings = () => {
             setSettings(prev => ({ ...prev, ...response.data }));
         } catch (error) {
             console.error('Failed to fetch settings:', error);
-            setErrorMessage('Ayarlar yüklenirken bir hata oluştu.');
+            setErrorMessage(t('admin.settingsLoadError'));
         }
     };
 
@@ -43,10 +43,10 @@ const AdminSettings = () => {
 
         try {
             await api.put('/settings', settings);
-            setSuccessMessage(t('admin.settings') + ' başarıyla güncellendi.');
+            setSuccessMessage(t('admin.settingsUpdateSuccess'));
         } catch (error) {
             console.error('Failed to update settings:', error);
-            setErrorMessage(error.response?.data?.message || 'Ayarlar güncellenirken bir hata oluştu.');
+            setErrorMessage(error.response?.data?.message || t('admin.settingsUpdateError'));
         } finally {
             setLoading(false);
         }
@@ -76,33 +76,31 @@ const AdminSettings = () => {
             <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6 max-w-2xl border border-[rgba(0,0,0,0.05)]">
                 <div className="space-y-6">
                     <div>
-                        <label className="block text-sm font-semibold text-[#5d4037] mb-2">Restoran Adı</label>
+                        <label className="block text-sm font-semibold text-[#5d4037] mb-2">{t('admin.restaurantName')}</label>
                         <input
                             type="text"
                             name="restaurant_name"
                             value={settings.restaurant_name}
                             onChange={handleChange}
                             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#81c784] focus:border-[#81c784] transition-colors"
-                            placeholder="Örn: Lezzet Durağı"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-[#5d4037] mb-2">Logo (Emoji veya URL)</label>
+                        <label className="block text-sm font-semibold text-[#5d4037] mb-2">{t('admin.logoUrl')}</label>
                         <input
                             type="text"
                             name="restaurant_logo"
                             value={settings.restaurant_logo}
                             onChange={handleChange}
                             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#81c784] focus:border-[#81c784] transition-colors"
-                            placeholder="Örn: 🌿 veya https://site.com/logo.png"
                         />
-                        <p className="text-xs text-gray-400 mt-1">Ana sayfada restoran adının üzerinde görünür.</p>
+                        <p className="text-xs text-gray-400 mt-1">{t('admin.logoHelp')}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-semibold text-[#5d4037] mb-2">İletişim Telefonu</label>
+                            <label className="block text-sm font-semibold text-[#5d4037] mb-2">{t('admin.contactPhone')}</label>
                             <input
                                 type="text"
                                 name="contact_phone"
@@ -113,7 +111,7 @@ const AdminSettings = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-[#5d4037] mb-2">İletişim Adresi</label>
+                            <label className="block text-sm font-semibold text-[#5d4037] mb-2">{t('admin.contactAddress')}</label>
                             <input
                                 type="text"
                                 name="contact_address"
@@ -125,14 +123,14 @@ const AdminSettings = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-[#5d4037] mb-2">Ana Sayfa Arkaplan (URL)</label>
+                        <label className="block text-sm font-semibold text-[#5d4037] mb-2">{t('admin.heroBgUrl')}</label>
                         <input
                             type="text"
                             name="home_hero_bg"
                             value={settings.home_hero_bg}
                             onChange={handleChange}
                             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#81c784] focus:border-[#81c784] transition-colors"
-                            placeholder="Boş bırakılırsa varsayılan yeşil desen görünür"
+                            placeholder={t('admin.heroBgHelp')}
                         />
                         {settings.home_hero_bg && (
                             <img src={settings.home_hero_bg} alt="Preview" className="mt-2 h-20 w-full object-cover rounded-lg border" onError={(e) => e.target.style.display = 'none'} />

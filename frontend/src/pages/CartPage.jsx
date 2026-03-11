@@ -15,9 +15,9 @@ const CartPage = () => {
     const [orderSuccess, setOrderSuccess] = useState(false);
     const [orderNote, setOrderNote] = useState('');
 
-    // Extract table number from URL params if exists (e.g. ?table=Masa 1)
+    // Extract table number from URL params if exists (e.g. ?table=Table 1)
     const queryParams = new URLSearchParams(location.search);
-    const tableNumber = queryParams.get('table') || sessionStorage.getItem('tableNumber') || 'Masa 1'; // Defaulting for demo
+    const tableNumber = queryParams.get('table') || sessionStorage.getItem('tableNumber') || 'Table 1'; // Defaulting for demo
 
     // Save table to session just in case valid
     if (queryParams.get('table')) {
@@ -51,7 +51,7 @@ const CartPage = () => {
             }, 3000);
         } catch (error) {
             console.error("Order submission failed:", error);
-            alert("Sipariş gönderilirken bir hata oluştu. Lütfen tekrar deneyin.");
+            alert(t('cart.errorOrdering') || "An error occurred while placing your order. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -143,11 +143,11 @@ const CartPage = () => {
 
                             {/* Order Note Field */}
                             <div className="mb-5 border-b border-[#5d4037] pb-5">
-                                <label className="block text-[#ffcc80] font-bold mb-2">Sipariş Notu Ekle:</label>
+                                <label className="block text-[#ffcc80] font-bold mb-2">{t('menu.note')}:</label>
                                 <textarea
                                     className="w-full bg-[#f5f5f5] text-[#3e2723] border border-[#795548] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#81c784] font-medium resize-none shadow-inner"
                                     rows="2"
-                                    placeholder="Ekstra isteklerinizi veya notlarınızı buraya yazabilirsiniz..."
+                                    placeholder={t('menu.notePlaceholder')}
                                     value={orderNote}
                                     onChange={(e) => setOrderNote(e.target.value)}
                                 ></textarea>

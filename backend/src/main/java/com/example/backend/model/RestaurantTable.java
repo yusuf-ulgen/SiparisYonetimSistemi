@@ -26,5 +26,5 @@ public class RestaurantTable {
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean occupied = false; // Masa dolu mu?
+    private boolean occupied = false;
 }

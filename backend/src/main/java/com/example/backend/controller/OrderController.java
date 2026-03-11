@@ -13,24 +13,24 @@ public class OrderController {
 
     private final OrderRepository orderRepository;
 
-    // List all active orders (for Staff Dashboard)
+    // List all active orders
     @GetMapping
     public List<Order> getAllOrders() {
         return orderRepository.findByStatusNot(Order.OrderStatus.COMPLETED);
     }
 
-    // List ALL orders including completed (for Admin Reports)
+    // List ALL orders including completed
     @GetMapping("/all")
     public List<Order> getAllTimeOrders() {
         return orderRepository.findAll();
     }
 
-    // Create a new order (for Customer)
+    // Create a new order
     @PostMapping
     public Order createOrder(@RequestBody Order order) {
         order.setStatus(Order.OrderStatus.NEW);
 
-        // Link order_items to the specific order (Bi-directional link fix)
+        // Link order_items to the specific order
         if (order.getItems() != null) {
             order.getItems().forEach(item -> item.setOrder(order));
         }
@@ -38,7 +38,7 @@ public class OrderController {
         return orderRepository.save(order);
     }
 
-    // Update specific order status (for Staff Dashboard)
+    // Update specific order status
     @PutMapping("/{id}/status")
     public Order updateOrderStatus(@PathVariable Long id, @RequestParam Order.OrderStatus status) {
         @SuppressWarnings("null")

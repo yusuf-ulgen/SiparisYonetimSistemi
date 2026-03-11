@@ -19,19 +19,19 @@ public class ProductController {
 
     private final CategoryRepository categoryRepository;
 
-    // Tüm ürünleri getir (Admin Paneli İçin)
+    // Fetch all products
     @GetMapping
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    // Sadece aktif ürünleri getir (Müşteri Menüsü İçin)
+    // Fetch only active products
     @GetMapping("/active")
     public List<Product> getActiveProducts() {
         return productRepository.findByAvailableTrue();
     }
 
-    // Kategoriye göre ürünleri getir
+    // Fetch products by category
     @GetMapping("/category/{categoryId}")
     public List<Product> getProductsByCategory(@PathVariable Long categoryId) {
         return productRepository.findByCategory_Id(categoryId);
@@ -72,7 +72,7 @@ public class ProductController {
         return ResponseEntity.ok(productRepository.save(product));
     }
 
-    // Ürünü sil
+    // Delete a product
     @SuppressWarnings("null")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
@@ -83,7 +83,7 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    // Ürünü ID'ye göre getir
+    // Fetch product by ID
     @SuppressWarnings("null")
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {

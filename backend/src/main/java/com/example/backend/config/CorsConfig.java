@@ -15,8 +15,9 @@ public class CorsConfig {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
+            @SuppressWarnings("null")
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            public void addCorsMappings(@SuppressWarnings("null") CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(allowedOrigins.split(","))
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")

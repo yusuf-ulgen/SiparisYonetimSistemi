@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 
 const MOCK_PRODUCTS = [
@@ -13,6 +14,7 @@ const MOCK_PRODUCTS = [
 ];
 
 const AdminProducts = () => {
+    const { t } = useTranslation();
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -76,12 +78,12 @@ const AdminProducts = () => {
             setIsEditing(false);
         } catch (error) {
             console.error("Error saving product:", error);
-            alert("Ürün kaydedilirken hata oluştu.");
+            alert(t('admin.errorSavingProduct'));
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('Bu ürünü silmek istediğinize emin misiniz?')) {
+        if (window.confirm(t('admin.confirmDeleteProduct'))) {
             if (typeof id === 'string' && id.startsWith('m')) {
                 setProducts(products.filter(p => p.id !== id));
                 return;
@@ -91,7 +93,7 @@ const AdminProducts = () => {
                 setProducts(products.filter(p => p.id !== id));
             } catch (error) {
                 console.error("Error deleting product:", error);
-                alert("Ürün silinirken hata oluştu.");
+                alert(t('admin.errorDeletingProduct'));
             }
         }
     };
@@ -101,19 +103,19 @@ const AdminProducts = () => {
         setIsEditing(true);
     };
 
-    if (loading) return <div className="p-4 text-white">Yükleniyor...</div>;
+    if (loading) return <div className="p-4 text-white">{t('admin.loading')}</div>;
 
     return (
         <div className="p-2">
             {/* Header matching the image: "Menu" title and top-right button */}
             <div className="flex justify-between items-center mb-8 bg-[#4e342e] theme-wood-bg p-4 rounded-xl shadow-[0_8px_20px_rgba(0,0,0,0.5)] border-2 border-[#3e2723]">
-                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">Menu</h1>
+                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">{t('admin.products')}</h1>
                 <button
                     onClick={() => openEditModal()}
                     className="bg-[#3e2723] hover:bg-[#5d4037] text-[#efebe9] border border-[#795548] px-4 py-2 rounded-lg font-medium shadow-inner transition flex items-center gap-2"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                    Restaurant Management
+                    {t('admin.newProduct')}
                 </button>
             </div>
 
@@ -151,7 +153,7 @@ const AdminProducts = () => {
                     <div className="bg-[#f5f5f5] rounded-xl shadow-2xl w-full max-w-lg p-6 my-8 border-4 border-[#5d4037]">
                         <div className="flex justify-between items-center mb-4 border-b border-gray-300 pb-2">
                             <h2 className="text-2xl font-bold text-[#4e342e]">
-                                {currentProduct.id ? 'Ürünü Düzenle' : 'Yeni Ürün'}
+                                {currentProduct.id ? t('admin.editProduct') : t('admin.newProduct')}
                             </h2>
                             <button onClick={() => setIsEditing(false)} className="text-gray-500 hover:text-red-600 cursor-pointer">
                                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -159,7 +161,7 @@ const AdminProducts = () => {
                         </div>
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Ürün Adı</label>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">{t('admin.productName')}</label>
                                 <input
                                     type="text" required
                                     className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#5d4037] outline-none font-medium"
@@ -168,14 +170,14 @@ const AdminProducts = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Kategori</label>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">{t('admin.category')}</label>
                                 <select
                                     required={!currentProduct.id?.toString().startsWith('m')}
                                     className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#5d4037] outline-none bg-white font-medium cursor-pointer"
                                     value={currentProduct.category?.id || ''}
                                     onChange={(e) => setCurrentProduct({ ...currentProduct, category: { id: e.target.value } })}
                                 >
-                                    <option value="" disabled>Seçiniz</option>
+                                    <option value="" disabled>{t('admin.select')}</option>
                                     {categories.map(cat => (
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
@@ -183,7 +185,7 @@ const AdminProducts = () => {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Fiyat ($ veya ₺)</label>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">{t('admin.priceLabel')}</label>
                                     <input
                                         type="number" step="0.01" required min="0"
                                         className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#5d4037] outline-none font-medium"
@@ -199,18 +201,18 @@ const AdminProducts = () => {
                                             checked={currentProduct.available}
                                             onChange={(e) => setCurrentProduct({ ...currentProduct, available: e.target.checked })}
                                         />
-                                        <span className="text-sm font-bold text-gray-800">Menüde Aktif</span>
+                                        <span className="text-sm font-bold text-gray-800">{t('admin.activeInMenu')}</span>
                                     </label>
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Görsel</label>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">{t('admin.image')}</label>
                                 {/* Tab: URL veya Dosya */}
                                 <div className="flex gap-2 mb-2">
                                     {['url', 'upload'].map(tab => (
                                         <button key={tab} type="button" onClick={() => setImageTab(tab)}
                                             className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition ${imageTab === tab ? 'bg-[#5d4037] text-white border-[#5d4037]' : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'}`}>
-                                            {tab === 'url' ? '🔗 URL Gir' : '📁 Dosya Yükle'}
+                                            {tab === 'url' ? t('admin.enterUrl') : t('admin.uploadFile')}
                                         </button>
                                     ))}
                                 </div>
@@ -241,7 +243,7 @@ const AdminProducts = () => {
                                                     });
                                                     setCurrentProduct(prev => ({ ...prev, imageUrl: res.data.url }));
                                                 } catch (err) {
-                                                    alert('Resim yüklenemedi.');
+                                                    alert(t('admin.errorUploading'));
                                                 } finally {
                                                     setUploading(false);
                                                 }
@@ -249,13 +251,13 @@ const AdminProducts = () => {
                                         />
                                         <label htmlFor="product-image-upload" className="cursor-pointer flex flex-col items-center gap-2">
                                             {uploading ? (
-                                                <span className="text-sm font-bold text-[#5d4037] animate-pulse">Yükleniyor...</span>
+                                                <span className="text-sm font-bold text-[#5d4037] animate-pulse">{t('admin.loading')}</span>
                                             ) : currentProduct.imageUrl ? (
                                                 <><img src={currentProduct.imageUrl} alt="" className="h-20 w-auto rounded-lg object-cover" />
-                                                    <span className="text-xs text-green-600 font-bold">✅ Yüklendi – Değiştir</span></>
+                                                    <span className="text-xs text-green-600 font-bold">✅ {t('admin.uploaded')} – {t('admin.change')}</span></>
                                             ) : (
                                                 <><span className="text-3xl">📷</span>
-                                                    <span className="text-sm font-bold text-[#5d4037]">Resim seç</span>
+                                                    <span className="text-sm font-bold text-[#5d4037]">{t('admin.selectImage')}</span>
                                                     <span className="text-xs text-gray-500">JPG, PNG, WEBP – max 10MB</span></>
                                             )}
                                         </label>
@@ -266,7 +268,7 @@ const AdminProducts = () => {
                                 )}
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Açıklama</label>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">{t('admin.description')}</label>
                                 <textarea
                                     className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#5d4037] outline-none font-medium"
                                     rows="2"
@@ -280,13 +282,13 @@ const AdminProducts = () => {
                                     onClick={() => setIsEditing(false)}
                                     className="px-5 py-2 border-2 border-gray-400 rounded-lg text-gray-700 hover:bg-gray-200 transition font-bold"
                                 >
-                                    İptal
+                                    {t('admin.cancel')}
                                 </button>
                                 <button
                                     type="submit"
                                     className="px-6 py-2 bg-[#4caf50] text-white rounded-lg hover:bg-[#388e3c] font-bold transition border border-[#2e7d32] shadow"
                                 >
-                                    Kaydet
+                                    {t('admin.save')}
                                 </button>
                             </div>
                         </form>

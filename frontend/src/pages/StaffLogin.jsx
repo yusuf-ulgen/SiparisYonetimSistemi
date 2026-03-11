@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 
 const StaffLogin = () => {
+    const { t } = useTranslation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -17,17 +19,16 @@ const StaffLogin = () => {
             const res = await api.post('/auth/login', { username, password });
             const token = res.data.token;
             if (token) {
-                // Decode role from JWT
                 const payload = JSON.parse(atob(token.split('.')[1]));
                 if (payload.role === 'STAFF' || payload.role === 'ADMIN') {
                     localStorage.setItem('staffToken', token);
                     navigate('/staff');
                 } else {
-                    setError('Bu hesabın personel yetkisi yok.');
+                    setError(t('staff.errorNoPermission'));
                 }
             }
         } catch (err) {
-            setError('Geçersiz kullanıcı adı veya şifre.');
+            setError(t('staff.errorInvalid'));
         } finally {
             setLoading(false);
         }
@@ -36,13 +37,12 @@ const StaffLogin = () => {
     return (
         <div className="min-h-screen theme-leaf-bg flex items-center justify-center p-4">
             <div className="w-full max-w-md">
-                {/* Header */}
                 <div className="text-center mb-8">
                     <div className="text-6xl mb-4 drop-shadow-xl">👨‍🍳</div>
                     <h1 className="text-3xl font-extrabold text-[#fff3e0] tracking-widest drop-shadow-lg">
-                        Personel Girişi
+                        {t('staff.login')}
                     </h1>
-                    <p className="text-[#a5d6a7] font-medium mt-2">Mutfak paneline erişmek için giriş yapın</p>
+                    <p className="text-[#a5d6a7] font-medium mt-2">{t('staff.loginSubtitle')}</p>
                 </div>
 
                 <div className="theme-wood-card rounded-2xl shadow-2xl overflow-hidden border-2 border-[#5d4037]">
@@ -54,17 +54,17 @@ const StaffLogin = () => {
                         )}
                         <form onSubmit={handleLogin} className="space-y-5">
                             <div>
-                                <label className="block text-sm font-bold text-[#5d4037] mb-1">Kullanıcı Adı</label>
+                                <label className="block text-sm font-bold text-[#5d4037] mb-1">{t('staff.username')}</label>
                                 <input
                                     type="text" required
                                     className="w-full border-2 border-[#d7ccc8] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#5d4037] outline-none text-[#3e2723] bg-white"
                                     value={username}
                                     onChange={e => setUsername(e.target.value)}
-                                    placeholder="personel_adi"
+                                    placeholder={t('staff.usernamePlaceholder')}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-[#5d4037] mb-1">Şifre</label>
+                                <label className="block text-sm font-bold text-[#5d4037] mb-1">{t('staff.password')}</label>
                                 <input
                                     type="password" required
                                     className="w-full border-2 border-[#d7ccc8] rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#5d4037] outline-none text-[#3e2723] bg-white"
@@ -78,7 +78,7 @@ const StaffLogin = () => {
                                 disabled={loading}
                                 className="w-full bg-[#4caf50] text-white rounded-xl px-4 py-3 font-bold border border-[#2e7d32] hover:bg-[#388e3c] transition active:scale-95 disabled:opacity-60"
                             >
-                                {loading ? '⏳ Giriş yapılıyor...' : '🔐 Giriş Yap'}
+                                {loading ? `⏳ ${t('staff.loggingIn')}` : `🔐 ${t('staff.loginButton')}`}
                             </button>
                         </form>
                     </div>
@@ -86,7 +86,7 @@ const StaffLogin = () => {
 
                 <div className="mt-6 text-center">
                     <Link to="/" className="text-[#a5d6a7] hover:text-white text-sm font-medium transition">
-                        ← Ana Sayfaya Dön
+                        ← {t('staff.backToHome')}
                     </Link>
                 </div>
             </div>

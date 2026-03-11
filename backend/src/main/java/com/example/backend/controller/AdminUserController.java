@@ -29,11 +29,11 @@ public class AdminUserController {
 
         if (username == null || username.isBlank() || password == null || password.length() < 6) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("message", "Kullanıcı adı ve en az 6 karakterli şifre gerekli"));
+                    .body(Map.of("message", "Username and password of at least 6 characters required"));
         }
         if (userRepository.existsByUsername(username)) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("message", "Bu kullanıcı adı zaten kullanılıyor"));
+                    .body(Map.of("message", "This username is already in use"));
         }
 
         User staff = new User();
@@ -50,11 +50,11 @@ public class AdminUserController {
         return userRepository.findById(id).map(user -> {
             if (user.getRole() == User.Role.ADMIN) {
                 return ResponseEntity.badRequest()
-                        .body(Map.of("message", "Admin hesabı silinemez"));
+                        .body(Map.of("message", "Admin account cannot be deleted"));
             }
             user.setActive(false);
             userRepository.save(user);
-            return ResponseEntity.ok(Map.of("message", "Hesap deaktif edildi"));
+            return ResponseEntity.ok(Map.of("message", "Account deactivated"));
         }).orElse(ResponseEntity.notFound().build());
     }
 }

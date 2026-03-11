@@ -18,7 +18,7 @@ const CustomerMenu = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const tableNumber = queryParams.get('table') || sessionStorage.getItem('tableNumber') || 'Masa 1';
+    const tableNumber = queryParams.get('table') || sessionStorage.getItem('tableNumber') || 'Table 1';
 
     if (queryParams.get('table')) {
         sessionStorage.setItem('tableNumber', queryParams.get('table'));
@@ -88,9 +88,9 @@ const CustomerMenu = () => {
                     <p className="text-xs text-[#ffcc80] mt-0.5 font-medium">{tableNumber}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    {/* Dil Switcher */}
+                    {/* Language Switcher */}
                     <LanguageSwitcher className="border-[#795548] text-[#ffcc80] hover:bg-[#5d4037]" />
-                    {/* Sipariş Durumu Butonu */}
+                    {/* Order Status Button */}
                     <button
                         onClick={() => navigate(`/order-status?table=${encodeURIComponent(tableNumber)}`)}
                         className="p-2 bg-[#5d4037] hover:bg-[#4e342e] rounded-full border border-[#795548] shadow-inner transition transform hover:scale-105 active:scale-95"
@@ -100,7 +100,7 @@ const CustomerMenu = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                     </button>
-                    {/* Garson Çağır */}
+                    {/* Call Waiter */}
                     <button
                         onClick={callWaiter}
                         disabled={waiterCalled || waiterLoading}
@@ -122,7 +122,7 @@ const CustomerMenu = () => {
                             </svg>
                         )}
                     </button>
-                    {/* Sepet */}
+                    {/* Cart */}
                     <button
                         onClick={() => navigate('/cart')}
                         className="relative p-2 bg-[#2e4c27] hover:bg-[#388e3c] rounded-full border border-[#81c784] shadow-inner transition transform hover:scale-105 active:scale-95"
@@ -139,7 +139,7 @@ const CustomerMenu = () => {
                 </div>
             </header>
 
-            {/* Garson Çağrıldı Banner */}
+            {/* Waiter Called Banner */}
             {waiterCalled && (
                 <div className="sticky top-[83px] z-10 mx-4 mt-2 bg-[#4caf50] text-white text-center py-2 px-4 rounded-xl font-bold shadow-lg border border-[#81c784] flex items-center justify-center gap-2 animate-pulse">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>

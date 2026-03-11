@@ -8,7 +8,7 @@ import api from '../services/api';
 const HomePage = () => {
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const [selectedTable, setSelectedTable] = useState('Masa 1');
+    const [selectedTable, setSelectedTable] = useState('Table 1');
     const [siteSettings, setSiteSettings] = useState(null);
 
     React.useEffect(() => {

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 
 const AdminCategories = () => {
+    const { t } = useTranslation();
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -38,18 +40,18 @@ const AdminCategories = () => {
             setCurrentCategory({ name: '', description: '' });
         } catch (error) {
             console.error("Error saving category:", error);
-            alert("Kategori kaydedilirken hata oluştu.");
+            alert(t('admin.errorSavingCategory'));
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('Bu kategoriyi silmek istediğinize emin misiniz? Altındaki ürünler de etkilenebilir.')) {
+        if (window.confirm(t('admin.confirmDeleteCategory'))) {
             try {
                 await api.delete(`/categories/${id}`);
                 setCategories(categories.filter(c => c.id !== id));
             } catch (error) {
                 console.error("Error deleting category:", error);
-                alert("Kategori silinirken hata oluştu.");
+                alert(t('admin.errorDeletingCategory'));
             }
         }
     };
@@ -59,18 +61,18 @@ const AdminCategories = () => {
         setIsEditing(true);
     };
 
-    if (loading) return <div className="p-4 text-gray-500">Yükleniyor...</div>;
+    if (loading) return <div className="p-4 text-gray-500">{t('admin.loading')}</div>;
 
     return (
         <div className="p-2">
             <div className="flex justify-between items-center mb-8 bg-[#4e342e] theme-wood-bg p-4 rounded-xl shadow-[0_8px_20px_rgba(0,0,0,0.5)] border-2 border-[#3e2723]">
-                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">Kategoriler</h1>
+                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">{t('admin.categories')}</h1>
                 <button
                     onClick={() => openEditModal()}
                     className="bg-[#3e2723] hover:bg-[#5d4037] text-[#efebe9] border border-[#795548] px-4 py-2 rounded-lg font-medium shadow-inner transition flex items-center gap-2"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                    Yeni Kategori
+                    {t('admin.newCategory')}
                 </button>
             </div>
 
@@ -78,9 +80,9 @@ const AdminCategories = () => {
                 <table className="min-w-full divide-y divide-[#5d4037]">
                     <thead className="bg-[#3e2723]">
                         <tr>
-                            <th className="px-6 py-4 text-left text-xs font-bold text-[#d7ccc8] uppercase tracking-wider">Kategori Adı</th>
-                            <th className="px-6 py-4 text-left text-xs font-bold text-[#d7ccc8] uppercase tracking-wider">Açıklama</th>
-                            <th className="px-6 py-4 text-right text-xs font-bold text-[#d7ccc8] uppercase tracking-wider">İşlemler</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-[#d7ccc8] uppercase tracking-wider">{t('admin.categoryName')}</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-[#d7ccc8] uppercase tracking-wider">{t('admin.description')}</th>
+                            <th className="px-6 py-4 text-right text-xs font-bold text-[#d7ccc8] uppercase tracking-wider">{t('admin.actions')}</th>
                         </tr>
                     </thead>
                     <tbody className="bg-[#4e342e] divide-y divide-[#5d4037]">
@@ -97,20 +99,20 @@ const AdminCategories = () => {
                                         onClick={() => openEditModal(category)}
                                         className="text-[#81c784] hover:text-[#aed581] mr-4 drop-shadow"
                                     >
-                                        Düzenle
+                                        {t('admin.edit')}
                                     </button>
                                     <button
                                         onClick={() => handleDelete(category.id)}
                                         className="text-[#e57373] hover:text-[#ef9a9a] drop-shadow"
                                     >
-                                        Sil
+                                        {t('admin.delete')}
                                     </button>
                                 </td>
                             </tr>
                         ))}
                         {categories.length === 0 && (
                             <tr>
-                                <td colSpan="3" className="px-6 py-10 text-center text-[#ffcc80]">Hiç kategori bulunamadı.</td>
+                                <td colSpan="3" className="px-6 py-10 text-center text-[#ffcc80]">{t('admin.noCategories')}</td>
                             </tr>
                         )}
                     </tbody>
@@ -123,7 +125,7 @@ const AdminCategories = () => {
                     <div className="bg-[#f5f5f5] rounded-xl shadow-2xl w-full max-w-md p-6 border-4 border-[#5d4037]">
                         <div className="flex justify-between items-center mb-4 border-b border-gray-300 pb-2">
                             <h2 className="text-2xl font-bold text-[#4e342e]">
-                                {currentCategory.id ? 'Kategoriyi Düzenle' : 'Yeni Kategori'}
+                                {currentCategory.id ? t('admin.editCategory') : t('admin.newCategory')}
                             </h2>
                             <button onClick={() => setIsEditing(false)} className="text-gray-500 hover:text-red-600 cursor-pointer">
                                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -131,7 +133,7 @@ const AdminCategories = () => {
                         </div>
                         <form onSubmit={handleSave}>
                             <div className="mb-4">
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Kategori Adı</label>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">{t('admin.categoryName')}</label>
                                 <input
                                     type="text"
                                     required
@@ -141,7 +143,7 @@ const AdminCategories = () => {
                                 />
                             </div>
                             <div className="mb-6">
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Açıklama</label>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">{t('admin.description')}</label>
                                 <textarea
                                     className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#5d4037] outline-none font-medium"
                                     rows="3"
@@ -155,13 +157,13 @@ const AdminCategories = () => {
                                     onClick={() => setIsEditing(false)}
                                     className="px-5 py-2 border-2 border-gray-400 rounded-lg text-gray-700 hover:bg-gray-200 transition font-bold"
                                 >
-                                    İptal
+                                    {t('admin.cancel')}
                                 </button>
                                 <button
                                     type="submit"
                                     className="px-6 py-2 bg-[#4caf50] text-white rounded-lg hover:bg-[#388e3c] font-bold transition border border-[#2e7d32] shadow"
                                 >
-                                    Kaydet
+                                    {t('admin.save')}
                                 </button>
                             </div>
                         </form>

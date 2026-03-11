@@ -18,13 +18,13 @@ public class FileUploadController {
 
     @PostMapping
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        // Klasörü oluştur
+        // Create directory
         Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        // Benzersiz dosya adı
+        // Unique filename
         String originalName = file.getOriginalFilename();
         String extension = originalName != null && originalName.contains(".")
                 ? originalName.substring(originalName.lastIndexOf('.'))

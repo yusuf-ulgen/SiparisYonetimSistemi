@@ -1,10 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-/**
- * LanguageSwitcher — compact TR/EN toggle button.
- * Can be placed in any header/navbar.
- */
 const LanguageSwitcher = ({ className = '' }) => {
     const { i18n } = useTranslation();
     const currentLang = i18n.language;

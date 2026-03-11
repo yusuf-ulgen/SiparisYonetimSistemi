@@ -3,7 +3,7 @@ import api from '../services/api';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 
-// Web Audio API ile zil sesi üret (MP3 dosyasına gerek yok)
+// Generate beep sound using Web Audio API (no MP3 file needed)
 const playBeep = (type = 'order') => {
     try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -18,7 +18,7 @@ const playBeep = (type = 'order') => {
         gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
         oscillator.start(ctx.currentTime);
         oscillator.stop(ctx.currentTime + 0.5);
-        // İkinci bip (çift bip)
+        // Second beep (double beep)
         if (type === 'order') {
             setTimeout(() => {
                 const ctx2 = new (window.AudioContext || window.webkitAudioContext)();
@@ -32,7 +32,7 @@ const playBeep = (type = 'order') => {
                 osc2.start(); osc2.stop(ctx2.currentTime + 0.4);
             }, 300);
         }
-    } catch (e) { /* tarayıcı izin vermedi */ }
+    } catch (e) { /* browser blocked audio */ }
 };
 
 const StaffDashboard = () => {
@@ -66,7 +66,7 @@ const StaffDashboard = () => {
             }
             prevCallCount.current = newCalls.length;
             setWaiterCalls(newCalls);
-        } catch (e) { /* endpoint henüz yoksa sessiz geç */ }
+        } catch (e) { /* ignore if endpoint doesn't exist yet */ }
     }, []);
 
     const fetchTables = useCallback(async () => {
@@ -91,7 +91,7 @@ const StaffDashboard = () => {
             setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
         } catch (e) {
             console.error(e);
-            alert('Durum güncellenemedi.');
+            alert(t('staff.statusUpdateError') || 'Failed to update status.');
         }
     };
 
@@ -140,7 +140,7 @@ const StaffDashboard = () => {
                 </ul>
                 {order.note && (
                     <div className="bg-[#fff3e0] border-l-4 border-[#ffb74d] p-3 mb-4 rounded-r-md">
-                        <p className="text-xs font-bold text-[#e65100] mb-1">Müşteri Notu:</p>
+                        <p className="text-xs font-bold text-[#e65100] mb-1">{t('cart.note')}:</p>
                         <p className="text-sm text-[#6d4c41] italic">{order.note}</p>
                     </div>
                 )}
@@ -204,7 +204,7 @@ const StaffDashboard = () => {
                 ))}
             </div>
 
-            {/* Siparişler Sekmesi */}
+            {/* Orders Tab */}
             {activeTab === 'orders' && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
@@ -238,7 +238,7 @@ const StaffDashboard = () => {
                 </div>
             )}
 
-            {/* Garson Çağrıları Sekmesi */}
+            {/* Waiter Calls Tab */}
             {activeTab === 'waiter' && (
                 <div>
                     {waiterCalls.length === 0 ? (
@@ -252,7 +252,7 @@ const StaffDashboard = () => {
                                     <div className="text-center mb-3">
                                         <div className="text-4xl mb-2">🛎️</div>
                                         <h3 className="font-extrabold text-[#4e342e] text-xl">{call.tableNumber}</h3>
-                                        <p className="text-[#a1887f] text-xs mt-1">Garson çağırıyor!</p>
+                                        <p className="text-[#a1887f] text-xs mt-1">{t('staff.isCalling')}</p>
                                     </div>
                                     <button onClick={() => dismissWaiterCall(call.id)}
                                         className="w-full bg-[#4caf50] text-white py-2.5 rounded-xl font-bold border border-[#2e7d32] hover:bg-[#388e3c] transition active:scale-95 shadow">
@@ -265,7 +265,7 @@ const StaffDashboard = () => {
                 </div>
             )}
 
-            {/* Masalar Sekmesi */}
+            {/* Tables Tab */}
             {activeTab === 'tables' && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                     {tables.map(table => (

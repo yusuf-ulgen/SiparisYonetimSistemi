@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 
 const AdminUsers = () => {
+    const { t } = useTranslation();
     const [staffList, setStaffList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({ username: '', password: '' });
@@ -26,36 +28,36 @@ const AdminUsers = () => {
         setSaving(true);
         try {
             await api.post('/admin/users', form);
-            setSuccess(`✅ "${form.username}" hesabı oluşturuldu!`);
+            setSuccess(`✅ "${form.username}" ${t('admin.successAccountCreated') || 'account created!'}`);
             setForm({ username: '', password: '' });
             fetchStaff();
         } catch (err) {
-            setError(err.response?.data?.message || 'Hesap oluşturulamadı.');
+            setError(err.response?.data?.message || t('admin.errorAccountCreate') || 'Failed to create account.');
         } finally { setSaving(false); }
     };
 
     const handleDelete = async (id, username) => {
-        if (!window.confirm(`"${username}" hesabını deaktif etmek istiyor musun?`)) return;
+        if (!window.confirm(t('admin.confirmDeactivate', { username }))) return;
         try {
             await api.delete(`/admin/users/${id}`);
             setStaffList(prev => prev.filter(u => u.id !== id));
-        } catch (e) { alert('Silme işlemi başarısız.'); }
+        } catch (e) { alert(t('admin.deactivateError')); }
     };
 
     return (
         <div className="p-2">
             <div className="flex justify-between items-center mb-8 bg-[#4e342e] theme-wood-bg p-4 rounded-xl shadow-[0_8px_20px_rgba(0,0,0,0.5)] border-2 border-[#3e2723]">
-                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">Kullanıcı Yönetimi</h1>
+                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">{t('admin.userManagement')}</h1>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Add Staff Form */}
                 <div className="theme-wood-card rounded-2xl border-2 border-[#5d4037] shadow-xl overflow-hidden">
                     <div className="theme-card-inner bg-[#fff8e1] p-6">
-                        <h3 className="font-extrabold text-[#4e342e] text-lg mb-4">👤 Yeni Personel Ekle</h3>
+                        <h3 className="font-extrabold text-[#4e342e] text-lg mb-4">👤 {t('admin.addNewStaff')}</h3>
                         <form onSubmit={handleAdd} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-bold text-[#5d4037] mb-1">Kullanıcı Adı</label>
+                                <label className="block text-sm font-bold text-[#5d4037] mb-1">{t('admin.staffUsername')}</label>
                                 <input
                                     type="text" required
                                     value={form.username}
@@ -65,21 +67,21 @@ const AdminUsers = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-[#5d4037] mb-1">Şifre (min 6 karakter)</label>
+                                <label className="block text-sm font-bold text-[#5d4037] mb-1">{t('admin.staffPassword')}</label>
                                 <div className="relative">
                                     <input
                                         type={showPassword ? 'text' : 'password'} required
                                         value={form.password}
                                         onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                                         className="w-full border-2 border-[#d7ccc8] rounded-xl px-4 py-2.5 pr-12 focus:ring-2 focus:ring-[#5d4037] outline-none text-[#3e2723]"
-                                        placeholder="en az 6 karakter"
+                                        placeholder={t('admin.staffPasswordPlaceholder')}
                                         minLength={6}
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5d4037] hover:text-[#3e2723] transition-colors p-2"
-                                        title={showPassword ? 'Gizle' : 'Göster'}
+                                        title={showPassword ? t('admin.hide') : t('admin.show')}
                                     >
                                         {showPassword ? (
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,24 +100,24 @@ const AdminUsers = () => {
                             {success && <p className="text-green-600 text-sm font-bold bg-green-50 p-2 rounded-lg">{success}</p>}
                             <button type="submit" disabled={saving}
                                 className="w-full bg-[#4caf50] text-white py-3 rounded-xl font-bold border border-[#2e7d32] hover:bg-[#388e3c] transition active:scale-95 disabled:opacity-50">
-                                {saving ? '⏳ Kaydediliyor...' : '➕ Personel Ekle'}
+                                {saving ? `⏳ ${t('admin.adding')}` : `➕ ${t('admin.addStaff')}`}
                             </button>
                         </form>
                         <div className="mt-4 p-3 bg-[#fff3e0] rounded-xl border border-[#ffe0b2] text-xs text-[#e65100] font-medium">
-                            💡 Personel girişi: <code className="bg-[#fff3e0] text-[#bf360c]">/staff/login</code> sayfasından yapılır. Yetki: sipariş takibi ve masa yönetimi.
+                            💡 {t('admin.staffHint')}
                         </div>
                     </div>
                 </div>
 
                 {/* Staff List */}
                 <div className="bg-[rgba(0,0,0,0.2)] rounded-2xl border border-[rgba(255,255,255,0.1)] p-5">
-                    <h3 className="font-extrabold text-[#f5f5f5] text-lg mb-4">🗒️ Mevcut Personel</h3>
+                    <h3 className="font-extrabold text-[#f5f5f5] text-lg mb-4">🗒️ {t('admin.existingStaff')}</h3>
                     {loading ? (
-                        <div className="text-center py-8 text-[#a1887f]">Yükleniyor...</div>
+                        <div className="text-center py-8 text-[#a1887f]">{t('admin.loading')}</div>
                     ) : staffList.length === 0 ? (
                         <div className="text-center py-12 text-[#a1887f]">
                             <p className="text-3xl mb-2">👥</p>
-                            <p className="font-bold">Henüz personel hesabı yok.</p>
+                            <p className="font-bold">{t('admin.noStaff')}</p>
                         </div>
                     ) : (
                         <div className="space-y-2">
@@ -126,7 +128,8 @@ const AdminUsers = () => {
                                         <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-[#2e4c27] text-[#aed581] border border-[#4caf50] font-bold">STAFF</span>
                                     </div>
                                     <button onClick={() => handleDelete(user.id, user.username)}
-                                        className="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-lg transition">
+                                        className="text-red-400 hover:text-red-300 hover:bg-red-900/30 p-2 rounded-lg transition"
+                                    >
                                         🗑️
                                     </button>
                                 </div>

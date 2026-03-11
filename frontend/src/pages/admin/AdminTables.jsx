@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 
 const AdminTables = () => {
+    const { t } = useTranslation();
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -41,18 +43,18 @@ const AdminTables = () => {
             setCurrentTable({ tableNumber: '' });
         } catch (error) {
             console.error("Error saving table:", error);
-            alert("Masa kaydedilirken hata oluştu.");
+            alert(t('admin.errorSavingTable'));
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('Bu masayı silmek istediğinize emin misiniz?')) {
+        if (window.confirm(t('admin.confirmDeleteTable'))) {
             try {
                 await api.delete(`/tables/${id}`);
                 setTables(tables.filter(t => t.id !== id));
             } catch (error) {
                 console.error("Error deleting table:", error);
-                alert("Masa silinirken hata oluştu.");
+                alert(t('admin.errorDeletingTable'));
             }
         }
     };
@@ -61,25 +63,25 @@ const AdminTables = () => {
         try {
             const res = await api.post(`/tables/${id}/generate-qr`);
             setTables(tables.map(t => t.id === id ? res.data : t));
-            alert("QR Kod URL'si başarıyla oluşturuldu/güncellendi.");
+            alert(t('admin.qrSuccess'));
         } catch (error) {
             console.error("Error generating QR:", error);
-            alert("QR kod oluşturulamadı.");
+            alert(t('admin.qrError'));
         }
     };
 
-    if (loading) return <div className="p-4 text-gray-500">Yükleniyor...</div>;
+    if (loading) return <div className="p-4 text-gray-500">{t('admin.loading')}</div>;
 
     return (
         <div className="p-2">
             <div className="flex justify-between items-center mb-8 bg-[#4e342e] theme-wood-bg p-4 rounded-xl shadow-[0_8px_20px_rgba(0,0,0,0.5)] border-2 border-[#3e2723]">
-                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">Masalar & QR Kodlar</h1>
+                <h1 className="text-3xl font-bold text-[#f5f5f5] tracking-widest drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ml-2">{t('admin.tablesAndQr')}</h1>
                 <button
                     onClick={() => { setCurrentTable({ tableNumber: '' }); setIsEditing(true); }}
                     className="bg-[#3e2723] hover:bg-[#5d4037] text-[#efebe9] border border-[#795548] px-4 py-2 rounded-lg font-medium shadow-inner transition flex items-center gap-2"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                    Yeni Masa Ekle
+                    {t('admin.addTable')}
                 </button>
             </div>
 
@@ -112,7 +114,7 @@ const AdminTables = () => {
                                         rel="noreferrer"
                                         className="text-xs text-[#2e7d32] font-bold hover:underline break-all mt-3 block bg-green-50 py-1 px-2 rounded"
                                     >
-                                        Menü Linki
+                                        {t('admin.menuLink')}
                                     </a>
                                 </div>
                             ) : (
@@ -127,7 +129,7 @@ const AdminTables = () => {
                             onClick={() => generateQRUrl(table.id)}
                             className="w-full bg-[#3e2723] border border-[#5d4037] text-[#ffcc80] font-bold py-3 rounded-lg hover:bg-[#4e342e] transition shadow-md"
                         >
-                            {table.qrCodeUrl ? 'QR Kodu Yenile' : 'Hemen Oluştur'}
+                            {table.qrCodeUrl ? t('admin.refreshQr') : t('admin.generateNow')}
                         </button>
                     </div>
                 ))}
@@ -138,20 +140,20 @@ const AdminTables = () => {
                 <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
                     <div className="bg-[#f5f5f5] rounded-xl shadow-2xl w-full max-w-sm p-6 border-4 border-[#5d4037]">
                         <div className="flex justify-between items-center mb-4 border-b border-gray-300 pb-2">
-                            <h2 className="text-2xl font-bold text-[#4e342e]">Yeni Masa Ekle</h2>
+                            <h2 className="text-2xl font-bold text-[#4e342e]">{t('admin.addTable')}</h2>
                             <button onClick={() => setIsEditing(false)} className="text-gray-500 hover:text-red-600 cursor-pointer">
                                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </button>
                         </div>
                         <form onSubmit={handleSave}>
                             <div className="mb-6">
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Masa Adı / Numarası (Örn: Masa 12)</label>
+                                <label className="block text-sm font-bold text-gray-700 mb-2">{t('admin.tableNameLabel')}</label>
                                 <input
                                     type="text"
                                     required
                                     className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#5d4037] outline-none font-bold text-lg text-center"
                                     value={currentTable.tableNumber}
-                                    placeholder="Masa Adını Giriniz..."
+                                    placeholder={t('admin.tableNamePlaceholder')}
                                     onChange={(e) => setCurrentTable({ ...currentTable, tableNumber: e.target.value })}
                                 />
                             </div>
@@ -161,13 +163,13 @@ const AdminTables = () => {
                                     onClick={() => setIsEditing(false)}
                                     className="px-5 py-2 border-2 border-gray-400 rounded-lg text-gray-700 hover:bg-gray-200 transition font-bold"
                                 >
-                                    İptal
+                                    {t('admin.cancel')}
                                 </button>
                                 <button
                                     type="submit"
                                     className="px-6 py-2 bg-[#4caf50] text-white rounded-lg hover:bg-[#388e3c] font-bold transition border border-[#2e7d32] shadow"
                                 >
-                                    Kaydet
+                                    {t('admin.save')}
                                 </button>
                             </div>
                         </form>

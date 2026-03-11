@@ -45,11 +45,11 @@ public class SiteSettingsController {
                 SiteSettings newSetting = new SiteSettings();
                 newSetting.setSettingKey(entry.getKey());
                 newSetting.setSettingValue(entry.getValue());
-                newSetting.setDescription("Oluşturuldu: " + entry.getKey());
+                newSetting.setDescription("Created: " + entry.getKey());
                 siteSettingsRepository.save(newSetting);
             }
         }
 
-        return ResponseEntity.ok(Map.of("message", "Ayarlar başarıyla güncellendi."));
+        return ResponseEntity.ok(Map.of("message", "Settings updated successfully."));
     }
 }

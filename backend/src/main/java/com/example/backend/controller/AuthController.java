@@ -9,10 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Handles login for BOTH Admin and Staff roles.
- * POST /api/auth/login → { username, password } → returns JWT with role claim
- */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

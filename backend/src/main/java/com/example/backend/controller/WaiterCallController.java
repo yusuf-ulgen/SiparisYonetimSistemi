@@ -16,23 +16,23 @@ public class WaiterCallController {
 
     private final WaiterCallRepository waiterCallRepository;
 
-    // Müşteri garson çağırır
+    // Customer calls a waiter
     @PostMapping
     public ResponseEntity<WaiterCall> createCall(@RequestBody Map<String, String> body) {
-        String tableNumber = body.getOrDefault("tableNumber", "Bilinmiyor");
+        String tableNumber = body.getOrDefault("tableNumber", "Unknown");
         WaiterCall call = new WaiterCall();
         call.setTableNumber(tableNumber);
         call.setDismissed(false);
         return ResponseEntity.ok(waiterCallRepository.save(call));
     }
 
-    // Staff paneli aktif çağrıları çeker
+    // Staff panel fetches active calls
     @GetMapping("/active")
     public List<WaiterCall> getActiveCalls() {
         return waiterCallRepository.findByDismissedFalseOrderByCreatedAtDesc();
     }
 
-    // Staff çağrıyı kapatır
+    // Staff dismisses a call
     @PutMapping("/{id}/dismiss")
     public ResponseEntity<WaiterCall> dismissCall(@PathVariable @NonNull Long id) {
         return waiterCallRepository.findById(id).map(call -> {

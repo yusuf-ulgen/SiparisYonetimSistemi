@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import java.util.Objects;
 import java.util.List;
 
 @Component
@@ -38,6 +37,7 @@ public class DataSeeder implements CommandLineRunner {
         @Autowired
         private PasswordEncoder passwordEncoder;
 
+        @SuppressWarnings("null")
         @Override
         public void run(String... args) {
                 System.out.println("🌱 DataSeeder: Starting database initialization...");
@@ -64,27 +64,28 @@ public class DataSeeder implements CommandLineRunner {
                 }
 
                 // 2. Create Staff User if not exists
-                if (!userRepository.existsByUsername("garson")) {
+                if (!userRepository.existsByUsername("waiter")) {
                         userRepository.save(User.builder()
-                                        .username("garson")
-                                        .password(passwordEncoder.encode("garson123"))
+                                        .username("waiter")
+                                        .password(passwordEncoder.encode("waiter123"))
                                         .role(User.Role.STAFF)
                                         .active(true)
                                         .build());
-                        System.out.println("👤 DataSeeder: Staff user created (garson/garson123)");
+                        System.out.println("👤 DataSeeder: Staff user created (waiter/waiter123)");
                 }
 
                 // 3. Site Settings
                 if (siteSettingsRepository.count() == 0) {
                         System.out.println("⚙️ DataSeeder: Loading default settings...");
-                        siteSettingsRepository.save(new SiteSettings(null, "restaurant_name", "QR Sipariş Sistemi",
-                                        "Restoran adı"));
+                        siteSettingsRepository.save(new SiteSettings(null, "restaurant_name", "QR Ordering System",
+                                        "Restaurant Name"));
                         siteSettingsRepository
                                         .save(new SiteSettings(null, "restaurant_logo", "🌿", "Logo (Emoji/URL)"));
                         siteSettingsRepository
-                                        .save(new SiteSettings(null, "contact_phone", "+90 555 123 4567", "Telefon"));
+                                        .save(new SiteSettings(null, "contact_phone", "+90 555 123 4567", "Phone"));
                         siteSettingsRepository
-                                        .save(new SiteSettings(null, "contact_address", "Restoran Sok. No:1", "Adres"));
+                                        .save(new SiteSettings(null, "contact_address", "Restaurant St. No:1",
+                                                        "Address"));
                 }
 
                 // 4. Sample Data (Categories, Tables, Products)
@@ -94,35 +95,36 @@ public class DataSeeder implements CommandLineRunner {
                         // Tables
                         for (int i = 1; i <= 10; i++) {
                                 tableRepository.save(RestaurantTable.builder()
-                                                .tableNumber("Masa " + i)
-                                                .qrCodeUrl("http://localhost:3000/menu?table=Masa+" + i)
+                                                .tableNumber("Table " + i)
+                                                .qrCodeUrl("http://localhost:3000/menu?table=Table+" + i)
                                                 .occupied(false)
                                                 .build());
                         }
 
                         // Categories
-                        Category sicak = categoryRepository
-                                        .save(new Category(null, "Sıcak İçecekler", "Çay, Kahve", null));
-                        Category soguk = categoryRepository
-                                        .save(new Category(null, "Soğuk İçecekler", "Kola, Ayran", null));
-                        categoryRepository.save(new Category(null, "Tatlılar", "Lezzetler", null));
-                        Category ana = categoryRepository.save(new Category(null, "Ana Yemekler", "Doyurucu", null));
-                        Category pizza = categoryRepository.save(new Category(null, "Pizza", "Pizzalar", null));
+                        Category hotDrinks = categoryRepository
+                                        .save(new Category(null, "Hot Drinks", "Tea, Coffee", null));
+                        Category coldDrinks = categoryRepository
+                                        .save(new Category(null, "Cold Drinks", "Soda, Ayran", null));
+                        categoryRepository.save(new Category(null, "Desserts", "Sweet Treats", null));
+                        Category mainCourses = categoryRepository
+                                        .save(new Category(null, "Main Courses", "Filling Meals", null));
+                        Category pizza = categoryRepository.save(new Category(null, "Pizza", "Pizzas", null));
 
                         // Products
-                        kaydet("Çay", "Taze çay", 15.0,
+                        saveProduct("Tea", "Fresh tea", 15.0,
                                         "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Turkish_tea.jpg/640px-Turkish_tea.jpg",
-                                        sicak);
-                        kaydet("Türk Kahvesi", "Köpüklü", 40.0,
+                                        hotDrinks);
+                        saveProduct("Turkish Coffee", "Foamy", 40.0,
                                         "https://images.unsplash.com/photo-1504630083234-14187a9df0f5?auto=format&fit=crop&w=300&q=80",
-                                        sicak);
-                        kaydet("Ayran", "Yayık", 20.0,
+                                        hotDrinks);
+                        saveProduct("Ayran", "Traditional yogurt drink", 20.0,
                                         "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ayran.jpg/640px-Ayran.jpg",
-                                        soguk);
-                        kaydet("Izgara Köfte", "Pilav ile", 220.0,
+                                        coldDrinks);
+                        saveProduct("Grilled Meatballs", "With rice", 220.0,
                                         "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=300&q=80",
-                                        ana);
-                        kaydet("Margherita", "Fesleğenli", 130.0,
+                                        mainCourses);
+                        saveProduct("Margherita", "With basil", 130.0,
                                         "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80",
                                         pizza);
 
@@ -134,7 +136,7 @@ public class DataSeeder implements CommandLineRunner {
                         List<Product> products = productRepository.findAll();
                         for (Product p : products) {
                                 boolean updated = false;
-                                if ("Çay".equals(p.getName())) {
+                                if ("Tea".equals(p.getName()) || "Çay".equals(p.getName())) {
                                         p.setImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Turkish_tea.jpg/640px-Turkish_tea.jpg");
                                         updated = true;
                                 } else if ("Ayran".equals(p.getName())) {
@@ -148,7 +150,7 @@ public class DataSeeder implements CommandLineRunner {
                 }
         }
 
-        private void kaydet(String name, String desc, double price, String imageUrl, Category cat) {
+        private void saveProduct(String name, String desc, double price, String imageUrl, Category cat) {
                 productRepository.save(new Product(null, name, desc, price, imageUrl, cat, true));
         }
 }
