@@ -29,7 +29,7 @@ public class AdminController {
             return ResponseEntity.badRequest().body(new AuthResponse(null, "Username and password required"));
         }
         return userRepository.findByUsername(request.getUsername())
-                .filter(user -> user.isActive() &&
+                .filter(user -> Boolean.TRUE.equals(user.getActive()) &&
                         user.getRole() == User.Role.ADMIN &&
                         passwordEncoder.matches(request.getPassword(), user.getPassword()))
                 .map(user -> {

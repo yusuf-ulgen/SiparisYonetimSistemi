@@ -51,7 +51,7 @@ public class DataSeeder implements CommandLineRunner {
                 } else {
                         // Mevcut admin şifresini kontrol et ve gerekirse şifrele (Eski sürümlerden
                         // geçiş için)
-                        userRepository.findByUsernameAndActiveTrue("admin").ifPresent(admin -> {
+                        userRepository.findByUsername("admin").ifPresent(admin -> {
                                 if ("admin123".equals(admin.getPassword())) {
                                         admin.setPassword(passwordEncoder.encode("admin123"));
                                         userRepository.save(admin);
