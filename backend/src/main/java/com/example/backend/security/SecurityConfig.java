@@ -67,7 +67,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/waiter-calls/**").permitAll()
                         .requestMatchers("/api/upload/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/ping").permitAll()
+                        .requestMatchers("/api/ping").permitAll()
 
                         // Admin only: user management, categories/products/tables CRUD, password
                         .requestMatchers("/api/admin/users/**").hasRole("ADMIN")
